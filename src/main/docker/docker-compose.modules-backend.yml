@@ -1,0 +1,30 @@
+version: '3'
+
+# Microservice backend
+services:
+    modules-backend:
+        image: modules-backend
+        restart: always
+        networks:
+            - infra
+            - pbModules
+
+# Microservice database
+    modules-db:
+        image: mariadb:10.2.14
+        restart: always
+        networks:
+            - pbModules
+        environment:
+            MYSQL_ROOT_PASSWORD: my-secret-pw
+        volumes:
+            - modulesDB:/var/lib/mysql
+
+networks:
+    pbModules:
+    infra:
+        external:
+            name: pb_infra
+
+volumes:
+    modulesDB:
