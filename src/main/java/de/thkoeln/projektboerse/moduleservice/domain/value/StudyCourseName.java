@@ -20,7 +20,7 @@ public class StudyCourseName {
   public StudyCourseName(String name) {
     if (!isValid(name)) {
       throw new IllegalArgumentException(String
-          .format("Name %s exceeded maximum number of %n allowed characters", name, MAX_LENGTH));
+          .format("Name %s exceeded maximum number of %d allowed characters", name, MAX_LENGTH));
     }
     this.name = name;
   }
