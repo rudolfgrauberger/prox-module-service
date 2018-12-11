@@ -5,19 +5,19 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
-@Embeddable
 @Data
 @Setter(AccessLevel.NONE)
-public class StudyCourseName {
+@Embeddable
+public class ModuleName {
 
   private static final int MAX_LENGTH = 255;
 
   private String name;
 
-  protected StudyCourseName() {
+  protected ModuleName() {
   }
 
-  public StudyCourseName(String name) {
+  public ModuleName(String name) {
     if (!isValid(name)) {
       throw new IllegalArgumentException(String
           .format("Name %s exceeded maximum number of %d allowed characters", name, MAX_LENGTH));
