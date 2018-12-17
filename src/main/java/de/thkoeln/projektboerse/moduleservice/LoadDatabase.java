@@ -1,7 +1,6 @@
 package de.thkoeln.projektboerse.moduleservice;
 
 import de.thkoeln.projektboerse.moduleservice.domain.aggregate.StudyCourse;
-import de.thkoeln.projektboerse.moduleservice.domain.entity.Module;
 import de.thkoeln.projektboerse.moduleservice.domain.repository.StudyCourseRepository;
 import de.thkoeln.projektboerse.moduleservice.domain.value.AcademicDegree;
 import de.thkoeln.projektboerse.moduleservice.domain.value.HoPSModuleID;
@@ -33,10 +32,10 @@ class LoadDatabase {
               AcademicDegree.MASTER)) + " - Custom UUID " + testId);
       HoPSModuleID hoPSModuleID = new HoPSModuleID(1L, Date.from(Instant.now()));
       ModuleName moduleName = new ModuleName("Module Test");
-      Module module = new Module(moduleName, hoPSModuleID);
-      StudyCourse studyCourse = repository.findById(testId).get();
-      studyCourse.addModule(module);
-      log.info("Overwriting " + repository.save(studyCourse));
+//      Module module = new Module(moduleName, hoPSModuleID);
+//      StudyCourse studyCourse = repository.findById(testId).get();
+//      studyCourse.addModule(module);
+//      log.info("Overwriting " + repository.save(studyCourse));
     };
   }
 }
