@@ -34,7 +34,7 @@ networks:
     module-service-db:
     ptb-backend:
         external:
-            name: ptb-backend-network
+            name: ptb-backend
 
 # Microservice storage
 volumes:
