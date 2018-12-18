@@ -9,24 +9,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
+import javax.persistence.*;
+
+import lombok.*;
 
 @Entity
 @Table(name = "STUDYCOURSES")
 @Data
 @Setter(AccessLevel.NONE)
 public class StudyCourse {
-
   @Id
   @GeneratedValue
   @JsonIgnore
@@ -39,45 +30,34 @@ public class StudyCourse {
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Module> modules = new HashSet<>();
-  @OneToMany(mappedBy = "studyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
+
+  @EqualsAndHashCode.Exclude
+  @OneToMany(mappedBy = "parentStudyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<StudyCourse> studyDirections = new HashSet<>();
+
   @ManyToOne
-  private StudyCourse studyCourse;
+  private StudyCourse parentStudyCourse;
 
-  protected StudyCourse() {
-  }
+  protected StudyCourse() {}
 
-  public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
-    this(name, academicDegree, null);
-  }
+  public Set<StudyCourse> getStudyDirections() { return Collections.unmodifiableSet(studyDirections); }
 
-  public StudyCourse(StudyCourseName name, AcademicDegree academicDegree, StudyCourse studyCourse) {
-    if (!this.studyDirections.isEmpty()) {
-      throw new RuntimeException("A study direction must not have study directions!");
-    }
-    if (this.academicDegree != studyCourse.academicDegree) {
-      throw new RuntimeException(
-          "A study direction must have the same academic degree as the corresponding study course!");
-    }
-    this.name = name;
-    this.academicDegree = academicDegree;
-    this.studyCourse = studyCourse;
-  }
-
-  public Set<StudyCourse> getStudyDirections() {
-    return Collections.unmodifiableSet(studyDirections);
-  }
-
-  public Set<Module> getModules() {
-    return Collections.unmodifiableSet(modules);
-  }
+  public Set<Module> getModules() { return Collections.unmodifiableSet(modules); }
 
   public Boolean addModule(Module module) {
     return modules.add(module);
   }
 
-  public Boolean removeModule(Module module) {
-    return modules.remove(module);
-  }
+  public Boolean removeModule(Module module) { return modules.remove(module); }
 
+  public void setParentStudyCourse(StudyCourse parentStudyCourse) {
+    if (!this.studyDirections.isEmpty()) {
+      throw new RuntimeException("A study direction must not have study directions!");
+    }
+    if (this.academicDegree != parentStudyCourse.academicDegree) {
+      throw new RuntimeException(
+          "A study direction must have the same academic degree as the corresponding study course!");
+    }
+    this.parentStudyCourse = parentStudyCourse;
+  }
 }
