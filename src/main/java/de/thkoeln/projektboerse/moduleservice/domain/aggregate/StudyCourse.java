@@ -11,8 +11,11 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -25,6 +28,7 @@ import lombok.Setter;
 public class StudyCourse {
 
   @Id
+  @GeneratedValue
   @JsonIgnore
   private UUID id;
 
@@ -35,18 +39,33 @@ public class StudyCourse {
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Module> modules = new HashSet<>();
+  @OneToMany(mappedBy = "studyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<StudyCourse> studyDirections = new HashSet<>();
+  @ManyToOne
+  private StudyCourse studyCourse;
 
   protected StudyCourse() {
   }
 
   public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
-    this(UUID.randomUUID(), name, academicDegree);
+    this(name, academicDegree, null);
   }
 
-  public StudyCourse(UUID id, StudyCourseName name, AcademicDegree academicDegree) {
-    this.id = id;
+  public StudyCourse(StudyCourseName name, AcademicDegree academicDegree, StudyCourse studyCourse) {
+    if (!this.studyDirections.isEmpty()) {
+      throw new RuntimeException("A study direction must not have study directions!");
+    }
+    if (this.academicDegree != studyCourse.academicDegree) {
+      throw new RuntimeException(
+          "A study direction must have the same academic degree as the corresponding study course!");
+    }
     this.name = name;
     this.academicDegree = academicDegree;
+    this.studyCourse = studyCourse;
+  }
+
+  public Set<StudyCourse> getStudyDirections() {
+    return Collections.unmodifiableSet(studyDirections);
   }
 
   public Set<Module> getModules() {
