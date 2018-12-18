@@ -1,0 +1,36 @@
+version: '3'
+
+# Microservice backend
+services:
+    module_service:
+        image: module-service
+        environment:
+            - TZ=Europe/Berlin
+        restart: always
+        networks:
+            - ptb_backend
+            - module_service_db
+
+# Microservice database
+    module_db:
+        image: mariadb:10.2.14
+        restart: always
+        networks:
+            - module_service_db
+        environment:
+            - POSTGRES_PASSWORD=_PTBModuleService_2018
+            - POSTGRES_USER=module_service
+            - POSTGRES_DB=module_service
+            - JAVA_TOOL_OPTIONS=-Xms64m -Xmx128m
+        volumes:
+            - module-data:/var/lib/postgresql/data
+
+networks:
+    module_service_db:
+    ptb_backend:
+        external:
+            name: ptb_backend_network
+
+volumes:
+    module-data:
+
