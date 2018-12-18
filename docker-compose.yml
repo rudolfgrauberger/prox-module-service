@@ -1,42 +1,48 @@
 version: '3'
 
-# Microservice backend
-services:
-    module-service:
-        build:
-            dockerfile: Dockerfile
-            context: .
-        ports:
-            - "8080:8080"
-        environment:
-            - TZ=Europe/Berlin
-        restart: always
-        networks:
-            - ptb-backend
-            - module-service-db
 
-# Microservice database
-    module-db:
-        image: postgres:10.1
-        restart: always
-        networks:
-            - module-service-db
-        environment:
-            - POSTGRES_PASSWORD=_PTBModuleService_2018
-            - POSTGRES_USER=module_service
-            - POSTGRES_DB=module_service
-            - JAVA_TOOL_OPTIONS=-Xms64m -Xmx128m
-        volumes:
-            - module-data:/var/lib/postgresql/data
+# Microservice backend
+
+services:
+
+  # Microservice database
+  module-db:
+    image: postgres:10.1
+    restart: always
+    networks:
+    - module-service-db
+    environment:
+    - POSTGRES_PASSWORD=_PTBModuleService_2018
+    - POSTGRES_USER=module_service
+    - POSTGRES_DB=module_service
+    - JAVA_TOOL_OPTIONS=-Xms64m -Xmx128m
+    volumes:
+    - module-data:/var/lib/postgresql/data
+
+  # Microservice database
+  module-service:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+    - "8080:8080"
+    environment:
+    - TZ=Europe/Berlin
+    depends_on:
+    - module-db
+    restart: always
+    networks:
+    - ptb-backend
+    - module-service-db
 
 # Microservice network
 networks:
-    module-service-db:
-    ptb-backend:
-        external:
-            name: ptb-backend
+  module-service-db:
+  ptb-backend:
+    external:
+      name: ptb-backend
 
 # Microservice storage
 volumes:
-    module-data:
+  module-data:
 
