@@ -19,7 +19,6 @@ import lombok.*;
 @Setter(AccessLevel.NONE)
 public class StudyCourse {
   @Id
-  @GeneratedValue
   @JsonIgnore
   private UUID id;
 
@@ -38,7 +37,9 @@ public class StudyCourse {
   @ManyToOne
   private StudyCourse parentStudyCourse;
 
-  protected StudyCourse() {}
+  protected StudyCourse() {
+      this.id = UUID.randomUUID();
+  }
 
   public Set<StudyCourse> getStudyDirections() { return Collections.unmodifiableSet(studyDirections); }
 
