@@ -2,10 +2,10 @@ package de.thkoeln.projektboerse.moduleservice.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import de.thkoeln.projektboerse.moduleservice.domain.value.HoPSModuleID;
 import de.thkoeln.projektboerse.moduleservice.domain.value.ModuleName;
 import java.util.UUID;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
@@ -19,11 +19,9 @@ import lombok.Setter;
 public class Module {
 
   @Id
+  @GeneratedValue
   @JsonIgnore
   private UUID id;
-
-  @JsonIgnore
-  private HoPSModuleID hoPSModuleID;
 
   @JsonUnwrapped
   private ModuleName name;
@@ -31,13 +29,8 @@ public class Module {
   protected Module() {
   }
 
-  public Module(ModuleName name, HoPSModuleID hoPSModuleID) {
-    this(UUID.randomUUID(), name, hoPSModuleID);
+  public Module(ModuleName name) {
+    this.name = name;
   }
 
-  public Module(UUID id, ModuleName name, HoPSModuleID hoPSModuleID) {
-    this.id = id;
-    this.name = name;
-    this.hoPSModuleID = hoPSModuleID;
-  }
 }
