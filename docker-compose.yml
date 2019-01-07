@@ -10,14 +10,14 @@ services:
     image: postgres:10.1
     restart: always
     networks:
-    - module-service-db
+      - module-service-db
     environment:
-    - POSTGRES_PASSWORD=_PTBModuleService_2018
-    - POSTGRES_USER=module_service
-    - POSTGRES_DB=module_service
-    - JAVA_TOOL_OPTIONS=-Xms64m -Xmx128m
+      - POSTGRES_PASSWORD=_PTBModuleService_2018
+      - POSTGRES_USER=module_service
+      - POSTGRES_DB=module_service
+      - JAVA_TOOL_OPTIONS=-Xms64m -Xmx128m
     volumes:
-    - module-data:/var/lib/postgresql/data
+      - module-data:/var/lib/postgresql/data
 
   # Microservice database
   module-service:
@@ -25,15 +25,15 @@ services:
       dockerfile: Dockerfile
       context: .
     ports:
-    - "8080:8080"
+      - "8080:8080"
     environment:
-    - TZ=Europe/Berlin
+      - TZ=Europe/Berlin
     depends_on:
-    - module-db
+      - module-db
     restart: always
     networks:
-    - ptb-backend
-    - module-service-db
+      - ptb-backend
+      - module-service-db
 
 # Microservice network
 networks:
