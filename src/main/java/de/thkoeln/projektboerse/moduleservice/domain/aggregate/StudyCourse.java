@@ -9,15 +9,24 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.*;
-
-import lombok.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 @Entity
 @Table(name = "STUDYCOURSES")
 @Data
 @Setter(AccessLevel.NONE)
 public class StudyCourse {
+
   @Id
   @JsonIgnore
   private UUID id;
@@ -38,18 +47,24 @@ public class StudyCourse {
   private StudyCourse parentStudyCourse;
 
   protected StudyCourse() {
-      this.id = UUID.randomUUID();
+    this.id = UUID.randomUUID();
   }
 
-  public Set<StudyCourse> getStudyDirections() { return Collections.unmodifiableSet(studyDirections); }
+  public Set<StudyCourse> getStudyDirections() {
+    return Collections.unmodifiableSet(studyDirections);
+  }
 
-  public Set<Module> getModules() { return Collections.unmodifiableSet(modules); }
+  public Set<Module> getModules() {
+    return Collections.unmodifiableSet(modules);
+  }
 
   public Boolean addModule(Module module) {
     return modules.add(module);
   }
 
-  public Boolean removeModule(Module module) { return modules.remove(module); }
+  public Boolean removeModule(Module module) {
+    return modules.remove(module);
+  }
 
   public void setParentStudyCourse(StudyCourse parentStudyCourse) {
     if (!this.studyDirections.isEmpty()) {
