@@ -2,33 +2,25 @@
 
 pipeline {
     agent any
-    tools {
-        maven ''
-        jdk ''
-    }
-    environment {
-
-    }
-
     stages {
-        stage('Checkout') {
+        stage("Checkout") {
             steps {
-                echo 'Checking out..'
+                echo "Checking out..."
             }
         }
-        stage('Build') {
+        stage("Build") {
             steps {
-                echo 'Building..'
+                echo "Building...."
             }
         }
-        stage('Test') {
+        stage("Test") {
             steps {
-                echo 'Testing..'
+                echo "Testing.."
             }
         }
-        stage('Deploy') {
+        stage("Deploy") {
             steps {
-                echo 'Deploying....'
+                echo "Deploying...."
             }
         }
     }
