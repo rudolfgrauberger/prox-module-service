@@ -4,6 +4,7 @@ pipeline {
     agent any
     tools {
         maven "apache-maven-3.6.0"
+        jdk 'jdk8'
     }
     environment {
         PROJECTNAME = "module-service"
@@ -22,9 +23,13 @@ pipeline {
                 ])
             }
         }
-        stage("Build") {
+        stage("Build && SonarQube analysis") {
             steps {
-                sh "mvn clean package" // Führt den Maven build aus
+                withSonarQubeEnv("PTB SonarQube Server") {
+                    withMaven(maven:"Maven 3.6") {
+                        sh "mvn clean package sonar:sonar" // Führt den Maven build aus
+                    }
+                }
             }
         }
         stage("Test") {
@@ -36,8 +41,8 @@ pipeline {
             steps {
                 sh "mvn checkstyle:checkstyle"
                 //jacoco()
-                script { scannerHome = tool "TH Koeln SonarQube Scanner"; }
-                withSonarQubeEnv("SonarQube-Server") { sh "${scannerHome}/bin/sonar-scanner" }
+//                script { scannerHome = tool "SonarQube Scanner 3.2"; }
+//                withSonarQubeEnv("SonarQube-Server") { sh "$scannerHome}/bin/sonar-scanner" }
             }
             post {
                 always {
