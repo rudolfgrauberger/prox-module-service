@@ -36,7 +36,7 @@ pipeline {
             steps {
                 sh "mvn checkstyle:checkstyle"
                 //jacoco()
-                script { scannerHome = tool "SonarQube Scanner"; }
+                script { scannerHome = tool "TH Koeln SonarQube Scanner"; }
                 withSonarQubeEnv("SonarQube-Server") { sh "${scannerHome}/bin/sonar-scanner" }
             }
             post {
