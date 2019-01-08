@@ -1,6 +1,5 @@
-package de.thkoeln.projektboerse.moduleservice.domain.repository;
+package de.thkoeln.projektboerse.moduleservice.studycourse;
 
-import de.thkoeln.projektboerse.moduleservice.domain.aggregate.StudyCourse;
 import java.util.UUID;
 import org.springframework.data.repository.PagingAndSortingRepository;
 

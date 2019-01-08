@@ -1,4 +1,4 @@
-package de.thkoeln.projektboerse.moduleservice.domain.value;
+package de.thkoeln.projektboerse.moduleservice.studycourse;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
