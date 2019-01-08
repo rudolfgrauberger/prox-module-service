@@ -32,6 +32,19 @@ pipeline {
                 echo "Testing..."
             }
         }
+        stage("Code Quality Check") {
+            steps {
+                sh "mvn checkstyle:checkstyle"
+                jacoco()
+                script { scannerHome = tool "SonarQube Scanner"; }
+                withSonarQubeEnv("SonarQube-Server") { sh "${scannerHome}/bin/sonar-scanner" }
+            }
+            post {
+                always {
+                    step([$class: "hudson.plugins.checkstyle.CheckStylePublisher", pattern: "**/target/checkstyle-result.xml", unstableTotalAll: "100"])
+                }
+            }
+        }
         stage("Deploy") {
             steps {
                 echo "Deploying..."
