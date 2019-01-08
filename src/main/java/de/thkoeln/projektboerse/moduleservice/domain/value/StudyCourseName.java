@@ -1,13 +1,12 @@
 package de.thkoeln.projektboerse.moduleservice.domain.value;
 
 import javax.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
+import lombok.Getter;
+import lombok.ToString;
 
 @Embeddable
-@Data
-@Setter(AccessLevel.NONE)
+@ToString
+@Getter
 public class StudyCourseName {
 
   private static final int MAX_LENGTH = 255;

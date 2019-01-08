@@ -2,12 +2,11 @@ package de.thkoeln.projektboerse.moduleservice.domain.value;
 
 import java.util.Date;
 import javax.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
+import lombok.Getter;
+import lombok.ToString;
 
-@Data
-@Setter(AccessLevel.NONE)
+@ToString
+@Getter
 @Embeddable
 public class HoPSModuleID {
 

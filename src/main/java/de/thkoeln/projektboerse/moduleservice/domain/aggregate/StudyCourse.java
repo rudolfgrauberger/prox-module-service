@@ -11,23 +11,21 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.Getter;
+import lombok.ToString;
 
 @Entity
-@Table(name = "STUDYCOURSES")
-@Data
-@Setter(AccessLevel.NONE)
+@ToString
+@Getter
 public class StudyCourse {
 
   @Id
+  @GeneratedValue
   @JsonIgnore
   private UUID id;
 
@@ -39,7 +37,6 @@ public class StudyCourse {
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Module> modules = new HashSet<>();
 
-  @EqualsAndHashCode.Exclude
   @OneToMany(mappedBy = "parentStudyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<StudyCourse> studyDirections = new HashSet<>();
 
@@ -47,7 +44,11 @@ public class StudyCourse {
   private StudyCourse parentStudyCourse;
 
   protected StudyCourse() {
-    this.id = UUID.randomUUID();
+  }
+
+  public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
+    this.name = name;
+    this.academicDegree = academicDegree;
   }
 
   public Set<StudyCourse> getStudyDirections() {
@@ -58,12 +59,29 @@ public class StudyCourse {
     return Collections.unmodifiableSet(modules);
   }
 
-  public Boolean addModule(Module module) {
-    return modules.add(module);
+  public void addModule(Module module) {
+    modules.add(module);
   }
 
-  public Boolean removeModule(Module module) {
-    return modules.remove(module);
+  public void removeModule(Module module) {
+    modules.remove(module);
+  }
+
+  public void addStudyDirection(StudyCourse studyDirection) {
+    if (studyDirection.getParentStudyCourse() != null) {
+      throw new RuntimeException("A study direction must only have one parent!");
+    }
+    if (this.academicDegree != studyDirection.academicDegree) {
+      throw new RuntimeException(
+          "A study direction must have the same academic degree as the corresponding study course!");
+    }
+    studyDirections.add(studyDirection);
+    studyDirection.setParentStudyCourse(this);
+  }
+
+  public void removeStudyDirection(StudyCourse studyDirection) {
+    studyDirections.remove(studyDirection);
+    studyDirection.setParentStudyCourse(null);
   }
 
   public void setParentStudyCourse(StudyCourse parentStudyCourse) {
@@ -76,4 +94,5 @@ public class StudyCourse {
     }
     this.parentStudyCourse = parentStudyCourse;
   }
+
 }
