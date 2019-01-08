@@ -4,9 +4,9 @@ import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
-@Getter
 @Embeddable
+@Getter
+@ToString
 public class ModuleName {
 
   private static final int MAX_LENGTH = 255;

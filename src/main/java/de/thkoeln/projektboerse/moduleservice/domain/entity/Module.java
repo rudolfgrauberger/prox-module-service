@@ -12,8 +12,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Entity
-@ToString
 @Getter
+@ToString
 public class Module {
 
   @Id

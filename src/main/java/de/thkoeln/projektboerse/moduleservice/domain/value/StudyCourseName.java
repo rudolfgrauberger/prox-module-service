@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Embeddable
-@ToString
 @Getter
+@ToString
 public class StudyCourseName {
 
   private static final int MAX_LENGTH = 255;

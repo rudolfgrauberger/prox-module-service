@@ -5,9 +5,9 @@ import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
-@Getter
 @Embeddable
+@Getter
+@ToString
 public class HoPSModuleID {
 
   private Long modulkuerzel;
