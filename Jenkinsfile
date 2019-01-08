@@ -28,7 +28,7 @@ pipeline {
         }
         stage("Build") {
             steps {
-                sh "mvn clean package" // Führt den Maven build aus
+                sh "mvn clean package -Dmaven.test.skip=true" // Führt den Maven build aus
             }
         }
         stage('SonarQube Analysis') {
