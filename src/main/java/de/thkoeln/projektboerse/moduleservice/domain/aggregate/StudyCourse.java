@@ -94,4 +94,5 @@ public class StudyCourse {
     }
     this.parentStudyCourse = parentStudyCourse;
   }
+
 }
