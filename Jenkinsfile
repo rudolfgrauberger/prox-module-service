@@ -35,7 +35,7 @@ pipeline {
         stage("Code Quality Check") {
             steps {
                 sh "mvn checkstyle:checkstyle"
-                jacoco()
+                //jacoco()
                 script { scannerHome = tool "SonarQube Scanner"; }
                 withSonarQubeEnv("SonarQube-Server") { sh "${scannerHome}/bin/sonar-scanner" }
             }
