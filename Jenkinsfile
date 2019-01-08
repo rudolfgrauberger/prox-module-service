@@ -28,6 +28,12 @@ pipeline {
                 sh "mvn clean package" // Führt den Maven build aus
             }
         }
+        stage('SonarQube Analysis') {
+            withSonarQubeEnv('TH Koeln GM SonarQube') {
+                // requires SonarQube Scanner for Maven 3.2+
+                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
+            }
+        }
         stage("Test") {
             steps {
                 echo "Testing......."
@@ -36,13 +42,6 @@ pipeline {
         stage("Code Quality Check") {
             steps {
                 sh "mvn checkstyle:checkstyle"
-                //jacoco()
-                script {
-                    scannerHome = tool "TH Koeln GM SonarQube Scanner";
-                }
-                withSonarQubeEnv("PTB SonarQube Server") {
-                    sh '${scannerHome}/bin/sonar-scanner'
-                }
             }
             post {
                 always {
