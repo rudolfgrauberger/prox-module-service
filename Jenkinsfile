@@ -44,21 +44,12 @@ pipeline {
         }
         stage("Test") {
             steps {
-                echo "Testing......."
+                echo "Testing..."
             }
         }
         stage("Code Quality Check") {
             steps {
-                sh "mvn checkstyle:checkstyle"
-                jacoco()
-            }
-            post {
-                always {
-                    step([
-                            $class: "hudson.plugins.checkstyle.CheckStylePublisher",
-                            pattern: "**/target/checkstyle-result.xml",
-                            unstableTotalAll: "100"])
-                }
+                echo "Code Quality Check..."
             }
         }
         stage("Deploy") {
