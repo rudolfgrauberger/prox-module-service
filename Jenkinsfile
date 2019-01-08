@@ -50,6 +50,7 @@ pipeline {
         stage("Code Quality Check") {
             steps {
                 sh "mvn checkstyle:checkstyle"
+                jacoco()
             }
             post {
                 always {
