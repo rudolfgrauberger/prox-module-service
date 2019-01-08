@@ -4,7 +4,7 @@ pipeline {
     agent any
     tools {
         maven "apache-maven-3.6.0"
-        jdk 'jdk8'
+        jdk "JDK_8u191"
     }
     environment {
         PROJECTNAME = "module-service"
