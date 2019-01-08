@@ -19,7 +19,10 @@ pipeline {
                         doGenerateSubmoduleConfigurations: false,
                         extensions: [],
                         submoduleCfg: [],
-                        userRemoteConfigs: [[credentialsId: '632cd510-b0ca-4567-8f61-5e134a8cff98', url: 'https://fsygs15.gm.fh-koeln.de:8888/PTB/module-service.git']]
+                        userRemoteConfigs: [[
+                                                    credentialsId: '632cd510-b0ca-4567-8f61-5e134a8cff98',
+                                                    url: 'https://fsygs15.gm.fh-koeln.de:8888/PTB/module-service.git'
+                                            ]]
                 ])
             }
         }
@@ -47,10 +50,14 @@ pipeline {
         stage("Code Quality Check") {
             steps {
                 sh "mvn checkstyle:checkstyle"
+                jacoco()
             }
             post {
                 always {
-                    step([$class: "hudson.plugins.checkstyle.CheckStylePublisher", pattern: "**/target/checkstyle-result.xml", unstableTotalAll: "100"])
+                    step([
+                            $class: "hudson.plugins.checkstyle.CheckStylePublisher",
+                            pattern: "**/target/checkstyle-result.xml",
+                            unstableTotalAll: "100"])
                 }
             }
         }
