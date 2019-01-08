@@ -32,9 +32,9 @@ pipeline {
             steps {
                 script {
                     // requires SonarQube Scanner 3.2+
-                    scannerHome = tool 'SonarQube Scanner 3.2'
+                    scannerHome = tool 'TH Koeln GM SonarQube Scanner'
                 }
-                withSonarQubeEnv('TH Koeln GM SonarQube Scanner') {
+                withSonarQubeEnv('TH Koeln GM SonarQube') {
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
