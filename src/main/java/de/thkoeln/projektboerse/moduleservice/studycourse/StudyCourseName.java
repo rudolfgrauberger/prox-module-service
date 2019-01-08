@@ -1,22 +1,22 @@
-package de.thkoeln.projektboerse.moduleservice.domain.value;
+package de.thkoeln.projektboerse.moduleservice.studycourse;
 
 import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
-@Getter
 @Embeddable
-public class ModuleName {
+@Getter
+@ToString
+public class StudyCourseName {
 
   private static final int MAX_LENGTH = 255;
 
   private String name;
 
-  protected ModuleName() {
+  protected StudyCourseName() {
   }
 
-  public ModuleName(String name) {
+  public StudyCourseName(String name) {
     if (!isValid(name)) {
       throw new IllegalArgumentException(String
           .format("Name %s exceeded maximum number of %d allowed characters", name, MAX_LENGTH));

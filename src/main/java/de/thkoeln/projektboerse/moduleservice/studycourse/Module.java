@@ -1,9 +1,7 @@
-package de.thkoeln.projektboerse.moduleservice.domain.entity;
+package de.thkoeln.projektboerse.moduleservice.studycourse;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import de.thkoeln.projektboerse.moduleservice.domain.value.ModuleDescription;
-import de.thkoeln.projektboerse.moduleservice.domain.value.ModuleName;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +10,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Entity
-@ToString
 @Getter
+@ToString
 public class Module {
 
   @Id

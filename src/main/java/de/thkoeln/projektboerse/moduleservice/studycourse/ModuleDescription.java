@@ -1,16 +1,18 @@
-package de.thkoeln.projektboerse.moduleservice.domain.value;
+package de.thkoeln.projektboerse.moduleservice.studycourse;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
-@Getter
 @Embeddable
+@Getter
+@ToString
 public class ModuleDescription {
 
   private static final int MAX_LENGTH = 3000;
 
+  @Column(length = 3000)
   private String description;
 
   protected ModuleDescription() {

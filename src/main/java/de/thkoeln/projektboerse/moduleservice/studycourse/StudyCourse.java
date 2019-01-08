@@ -1,10 +1,7 @@
-package de.thkoeln.projektboerse.moduleservice.domain.aggregate;
+package de.thkoeln.projektboerse.moduleservice.studycourse;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import de.thkoeln.projektboerse.moduleservice.domain.entity.Module;
-import de.thkoeln.projektboerse.moduleservice.domain.value.AcademicDegree;
-import de.thkoeln.projektboerse.moduleservice.domain.value.StudyCourseName;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,8 +17,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Entity
-@ToString
 @Getter
+@ToString
 public class StudyCourse {
 
   @Id
