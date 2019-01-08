@@ -29,9 +29,14 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-            withSonarQubeEnv('TH Koeln GM SonarQube') {
-                // requires SonarQube Scanner for Maven 3.2+
-                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
+            steps {
+                script {
+                    // requires SonarQube Scanner 3.2+
+                    scannerHome = tool 'SonarQube Scanner 3.2'
+                }
+                withSonarQubeEnv('TH Koeln GM SonarQube Scanner') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
             }
         }
         stage("Test") {
