@@ -23,7 +23,7 @@ pipeline {
                 ])
             }
         }
-        stage("Build && SonarQube analysis") {
+        stage("Build") {
             steps {
                 sh "mvn clean package" // Führt den Maven build aus
             }
@@ -37,8 +37,12 @@ pipeline {
             steps {
                 sh "mvn checkstyle:checkstyle"
                 //jacoco()
-                script { scannerHome = tool "TH Koeln GM SonarQube Scanner"; }
-                withSonarQubeEnv("PTB SonarQube Server") { sh "${scannerHome}/bin/sonar-scanner" }
+                script {
+                    scannerHome = tool "TH Koeln GM SonarQube Scanner";
+                }
+                withSonarQubeEnv("PTB SonarQube Server") {
+                    sh '${scannerHome}/bin/sonar-scanner'
+                }
             }
             post {
                 always {
