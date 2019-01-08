@@ -25,7 +25,7 @@ pipeline {
         }
         stage("Build && SonarQube analysis") {
             steps {
-                withSonarQubeEnv("PTB SonarQube Server") {
+                withSonarQubeEnv("TH Koeln GM SonarQube Server") {
                     withMaven(maven:"Maven 3.6") {
                         sh "mvn clean package sonar:sonar" // Führt den Maven build aus
                     }
@@ -34,7 +34,7 @@ pipeline {
         }
         stage("Test") {
             steps {
-                echo "Testing......"
+                echo "Testing......."
             }
         }
         stage("Code Quality Check") {
