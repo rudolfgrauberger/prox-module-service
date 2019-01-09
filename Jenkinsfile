@@ -13,16 +13,16 @@ pipeline {
         stage("Checkout") {
             steps {
                 checkout([
-                        $class: "GitSCM",
-                        branches: [[name: "*/master"]],
-                        credentialsId: "",
+                        $class                           : "GitSCM",
+                        branches                         : [[name: "*/master"]],
+                        credentialsId                    : "",
                         doGenerateSubmoduleConfigurations: false,
-                        extensions: [],
-                        submoduleCfg: [],
-                        userRemoteConfigs: [[
-                                                    credentialsId: '632cd510-b0ca-4567-8f61-5e134a8cff98',
-                                                    url: 'https://fsygs15.gm.fh-koeln.de:8888/PTB/module-service.git'
-                                            ]]
+                        extensions                       : [],
+                        submoduleCfg                     : [],
+                        userRemoteConfigs                : [[
+                                                                    credentialsId: '632cd510-b0ca-4567-8f61-5e134a8cff98',
+                                                                    url          : 'https://fsygs15.gm.fh-koeln.de:8888/PTB/module-service.git'
+                                                            ]]
                 ])
             }
         }
@@ -55,8 +55,8 @@ pipeline {
             post {
                 always {
                     step([
-                            $class: "hudson.plugins.checkstyle.CheckStylePublisher",
-                            pattern: "**/target/checkstyle-result.xml",
+                            $class          : "hudson.plugins.checkstyle.CheckStylePublisher",
+                            pattern         : "**/target/checkstyle-result.xml",
                             unstableTotalAll: "100"])
                 }
             }

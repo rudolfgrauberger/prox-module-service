@@ -1,30 +1,25 @@
 package de.thkoeln.projektboerse.moduleservice.studycourse;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import de.thkoeln.projektboerse.moduleservice.core.AbstractEntity;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Getter
-@ToString
-public class StudyCourse {
-
-  @Id
-  @GeneratedValue
-  @JsonIgnore
-  private UUID id;
+@ToString(callSuper = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class StudyCourse extends AbstractEntity {
 
   @JsonUnwrapped
   private StudyCourseName name;
@@ -39,9 +34,6 @@ public class StudyCourse {
 
   @ManyToOne
   private StudyCourse parentStudyCourse;
-
-  protected StudyCourse() {
-  }
 
   public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
     this.name = name;
