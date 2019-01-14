@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 
 # Microservice backend
@@ -33,15 +33,13 @@ services:
       - module-db
     restart: always
     networks:
-      - ptb-backend
+      - backend-network
       - module-service-db
 
 # Microservice network
 networks:
   module-service-db:
-  ptb-backend:
-    external:
-      name: ptb-backend
+  backend-network:
 
 # Microservice storage
 volumes:
