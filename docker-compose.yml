@@ -39,7 +39,9 @@ services:
 # Microservice network
 networks:
   module-service-db:
+    name: ptb_module-service-db
   backend-network:
+    name: ptb_backend-network
 
 # Microservice storage
 volumes:
