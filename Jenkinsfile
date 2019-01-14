@@ -46,6 +46,7 @@ pipeline {
                 SERVERNAME = "fsygs15.inf.fh-koeln.de"
             }
             steps {
+                echo "this is env variable ${YMLFILENAME}"
                 sh "scp -P ${SERVERPORT} -v ${PROJECTNAME}.tar ${SSHUSER}@${SERVERNAME}:~/"
                 sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/projektboerse/"
                 sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +

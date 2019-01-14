@@ -21,10 +21,10 @@ services:
 
   # Microservice database
   module-service:
-    image: repository.archi-lab.io/ptb-module-service
+    image: ptb-module-service
     build:
       dockerfile: Dockerfile
-      context: ~/
+      context: .
     ports:
       - "8080:8080"
     environment:
