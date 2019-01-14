@@ -14,7 +14,7 @@ pipeline {
             steps {
                 sh "mvn clean package" // Führt den Maven build aus
                 sh "docker build -t ${PROJECTNAME} ." // baut die Java App auf dem Container
-                sh "docker image save -o ${PROJECTNAME}.tar ${PROJECTNAME}"
+                sh "docker image save -o ${PROJECTNAME}.tar ${PROJECTNAME}" // Docker image als tar Datei speichern
             }
         }
         stage('SonarQube Analysis') {
@@ -46,7 +46,7 @@ pipeline {
                 SERVERNAME = "fsygs15.inf.fh-koeln.de"
             }
             steps {
-                sh "scp -P ${SERVERPORT} -v ${PROJECTNAME}.tar ${SSHUSER}@${SERVERNAME}:~/"
+                sh "scp -P ${SERVERPORT} -v ${PROJECTNAME}.tar ${SSHUSER}@${SERVERNAME}:~/"     // Kopiert per ssh die tar Datei auf dem Prod Server
                 sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/projektboerse/"
                 sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
                         "'docker image load -i ${PROJECTNAME}.tar; " +
