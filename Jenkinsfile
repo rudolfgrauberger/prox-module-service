@@ -7,13 +7,13 @@ pipeline {
         jdk "JDK_8u191"
     }
     environment {
-        PROJECTNAME = "module-service"
+        PROJECTNAME = "repository.archi-lab.io/ptb-module-service"
     }
     stages {
         stage("Build") {
             steps {
                 sh "mvn clean package" // Führt den Maven build aus
-                sh "docker build -t repository.archi-lab.io/ptb-module-service ." // baut die Java App auf dem Container
+                sh "docker build -t ${PROJECTNAME} ." // baut die Java App auf dem Container
                 sh "docker image save -o ${PROJECTNAME}.tar ${PROJECTNAME}"
             }
         }
