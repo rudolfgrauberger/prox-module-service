@@ -50,7 +50,7 @@ pipeline {
                 sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/projektboerse/"
                 sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
                         "'docker image load -i ${PROJECTNAME}.tar; " +
-                        "docker network create ptb-backend; docker network create module-service_db" +
+                        "docker network create ptb-backend; docker network create module-service_db; " +
                         "docker-compose -p ptb -f /srv/projektboerse/${YMLFILENAME} up -d'"
                 //sh "docker network inspect ptb-backend &> /dev/null || docker network create ptb-backend"
                 //sh "docker network inspect module-service_db &> /dev/null || docker network create module-service_db"
