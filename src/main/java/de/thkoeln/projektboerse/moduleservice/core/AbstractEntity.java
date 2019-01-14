@@ -6,13 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 @MappedSuperclass
-@Data
-@Setter(AccessLevel.NONE)
+@Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AbstractEntity {
 
