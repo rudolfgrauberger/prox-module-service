@@ -7,7 +7,7 @@ pipeline {
         jdk "JDK_8u191"
     }
     environment {
-        PROJECTNAME = "repository.archi-lab.io/ptb-module-service"
+        PROJECTNAME = "ptb-module-service"
     }
     stages {
         stage("Build") {
