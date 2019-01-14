@@ -51,7 +51,7 @@ pipeline {
                 sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
                         "'docker image load -i ${PROJECTNAME}.tar; " +
                         "docker network inspect backend-network &> /dev/null || docker network create backend-network; " +
-                        "docker network inspect module-service_db &> /dev/null || docker network create module-service_db; " +
+                        "docker network inspect module-service-db &> /dev/null || docker network create module-service-db; " +
                         "docker-compose -p ptb -f /srv/projektboerse/${YMLFILENAME} up -d'"
             }
         }

@@ -10,7 +10,7 @@ services:
     image: postgres:10.1
     restart: always
     networks:
-      - ptb_module-service-db
+      - module-service-db
     environment:
       - POSTGRES_PASSWORD=_PTBModuleService_2018
       - POSTGRES_USER=module_service
@@ -33,8 +33,8 @@ services:
       - module-db
     restart: always
     networks:
-      - ptb_backend-network
-      - ptb_module-service-db
+      - backend-network
+      - module-service-db
 
 # Microservice network
 networks:
