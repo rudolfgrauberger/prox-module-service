@@ -46,4 +46,3 @@ networks:
 # Microservice storage
 volumes:
   module-data:
-

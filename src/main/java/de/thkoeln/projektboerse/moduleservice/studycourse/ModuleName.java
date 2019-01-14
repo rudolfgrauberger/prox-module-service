@@ -1,20 +1,20 @@
 package de.thkoeln.projektboerse.moduleservice.studycourse;
 
 import javax.persistence.Embeddable;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Embeddable
-@Getter
-@ToString
+@Data
+@Setter(AccessLevel.NONE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ModuleName {
 
   private static final int MAX_LENGTH = 255;
 
   private String name;
-
-  protected ModuleName() {
-  }
 
   public ModuleName(String name) {
     if (!isValid(name)) {
@@ -25,7 +25,7 @@ public class ModuleName {
   }
 
   public static boolean isValid(String name) {
-    return name == null ? false : name.length() <= MAX_LENGTH;
+    return name != null && name.length() <= MAX_LENGTH;
   }
 
 }
