@@ -1,7 +1,9 @@
 package de.thkoeln.projektboerse.moduleservice.studycourse;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import de.thkoeln.projektboerse.moduleservice.core.AbstractEntity;
+import de.thkoeln.projektboerse.moduleservice.hops.HopsStudyCourseId;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +15,7 @@ import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -21,9 +24,11 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyCourse extends AbstractEntity {
 
+  @Setter
   @JsonUnwrapped
   private StudyCourseName name;
 
+  @Setter
   private AcademicDegree academicDegree;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -34,6 +39,10 @@ public class StudyCourse extends AbstractEntity {
 
   @ManyToOne
   private StudyCourse parentStudyCourse;
+
+  @Setter
+  @JsonIgnore
+  private HopsStudyCourseId hopsId;
 
   public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
     this.name = name;
