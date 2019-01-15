@@ -21,7 +21,7 @@ services:
 
   # Microservice database
   module-service:
-    image: repository.archi-lab.io/ptb-module-service
+    image: module-service
     build:
       dockerfile: Dockerfile
       context: .

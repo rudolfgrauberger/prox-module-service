@@ -12,20 +12,9 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                updateGitlabCommitStatus name: "Packaging", state: "running"
-                sh "mvn clean package -Dmaven.test.skip=true" // Führt den Maven build aus
-                sh "docker build -t repository.archi-lab.io/ptb-module-service ." // baut die Java App auf dem Container
-                post {
-                    success {
-                        updateGitlabCommitStatus name: "Building", state: "success"
-                    }
-                    failure {
-                        updateGitlabCommitStatus name: "Building", state: "failed"
-                    }
-                    unstable {
-                        updateGitlabCommitStatus name: "Building", state: "success"
-                    }
-                }
+                sh "mvn clean package" // Führt den Maven build aus
+                sh "docker build -t ${PROJECTNAME} ." // baut die Java App auf dem Container
+                sh "docker image save -o ${PROJECTNAME}.tar ${PROJECTNAME}" // Docker image als tar Datei speichern
             }
         }
         stage('SonarQube Analysis') {
@@ -50,21 +39,20 @@ pipeline {
             }
         }
         stage("Deploy") {
-            steps {
-                sh "docker network inspect ptb-backend &> /dev/null || docker network create ptb-backend"
-                sh "docker network inspect module-service_db &> /dev/null || docker network create module-service_db"
-                sh "docker-compose -p ptb up -d"
+            environment {
+                SERVERPORT = "22412"
+                YMLFILENAME = "docker-compose.yml"
+                SSHUSER = "jenkins"
+                SERVERNAME = "fsygs15.inf.fh-koeln.de"
             }
-            post {
-                success {
-                    updateGitlabCommitStatus name: "Deploying", state: "success"
-                }
-                failure {
-                    updateGitlabCommitStatus name: "Deploying", state: "failed"
-                }
-                unstable {
-                    updateGitlabCommitStatus name: "Deploying", state: "success"
-                }
+            steps {
+                sh "scp -P ${SERVERPORT} -v ${PROJECTNAME}.tar ${SSHUSER}@${SERVERNAME}:~/"     // Kopiert per ssh die tar Datei auf dem Produktionsserver
+                sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/projektboerse/"
+                sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
+                        "'docker image load -i ${PROJECTNAME}.tar; " +
+                        "docker network inspect ptb-backend &> /dev/null || docker network create ptb-backend; " +
+                        "docker network inspect module-service_db &> /dev/null || docker network create module-service_db; " +
+                        "docker-compose -p ptb -f /srv/projektboerse/${YMLFILENAME} up -d'"
             }
         }
     }
