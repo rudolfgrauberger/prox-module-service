@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 
 # Microservice backend
@@ -19,7 +19,7 @@ services:
     volumes:
       - module-data:/var/lib/postgresql/data
 
-  # Microservice database
+  # Microservice instance
   module-service:
     image: module-service
     build:
@@ -33,15 +33,18 @@ services:
       - module-db
     restart: always
     networks:
-      - ptb-backend
       - module-service-db
+#      - ptb-infrastructure
 
 # Microservice network
 networks:
   module-service-db:
-  ptb-backend:
-    external:
-      name: ptb-backend
+    name: ptb_module-net
+
+## Connect service with api-gateway and service discovery
+#  ptb-infrastructure:
+#    external:
+#      name: ptb_infra-net
 
 # Microservice storage
 volumes:

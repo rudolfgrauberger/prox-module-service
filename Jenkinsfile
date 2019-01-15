@@ -50,8 +50,7 @@ pipeline {
                 sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/projektboerse/"
                 sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
                         "'docker image load -i ${PROJECTNAME}.tar; " +
-                        "docker network inspect ptb-backend &> /dev/null || docker network create ptb-backend; " +
-                        "docker network inspect module-service_db &> /dev/null || docker network create module-service_db; " +
+                        /*"docker network inspect ptb_infra-net &> /dev/null || docker network create ptb_infra-net; " + */ // when connecting to other services, enable this
                         "docker-compose -p ptb -f /srv/projektboerse/${YMLFILENAME} up -d'"
             }
         }
