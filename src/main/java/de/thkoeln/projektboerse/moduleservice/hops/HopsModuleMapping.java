@@ -12,15 +12,15 @@ import lombok.ToString;
 @Getter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StudyCourseMapping extends AbstractEntity {
+public class HopsModuleMapping extends AbstractEntity {
 
-  private HopsStudyCourseId hopsId;
+  private HopsModuleId hopsId;
 
-  private UUID studyCourseId;
+  private UUID moduleId;
 
-  public StudyCourseMapping(HopsStudyCourseId hopsId, UUID studyCourseId) {
+  public HopsModuleMapping(HopsModuleId hopsId, UUID moduleId) {
     this.hopsId = hopsId;
-    this.studyCourseId = studyCourseId;
+    this.moduleId = moduleId;
   }
 
 }

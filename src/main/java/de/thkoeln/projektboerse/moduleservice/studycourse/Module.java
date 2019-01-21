@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -14,9 +15,11 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Module extends AbstractEntity {
 
+  @Setter
   @JsonUnwrapped
   private ModuleName name;
 
+  @Setter
   @JsonUnwrapped
   private ModuleDescription description;
 

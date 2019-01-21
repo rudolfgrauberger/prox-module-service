@@ -8,9 +8,11 @@ import org.springframework.context.annotation.Configuration;
 public class ImportRunner {
 
   @Bean
-  CommandLineRunner runFeign(HopsService hopsService) {
+  CommandLineRunner runFeign(HopsStudyCourseService hopsStudyCourseService,
+      HopsModuleService hopsModuleService) {
     return args -> {
-      hopsService.importStudyCourses();
+      hopsStudyCourseService.importStudyCourses();
+      hopsModuleService.importModules();
     };
   }
 

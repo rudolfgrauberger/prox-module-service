@@ -10,12 +10,15 @@ import lombok.Setter;
 @Data
 @Setter(AccessLevel.NONE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class HopsStudyCourseId {
+public class HopsModuleId {
 
-  private String bezeichnung;
+  private String kuerzel;
 
-  public HopsStudyCourseId(String bezeichnung) {
-    this.bezeichnung = bezeichnung;
+  private String version;
+
+  public HopsModuleId(String kuerzel, String version) {
+    this.kuerzel = kuerzel;
+    this.version = version;
   }
 
 }

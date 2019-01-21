@@ -76,7 +76,7 @@ public class StudyCourse extends AbstractEntity {
     studyDirection.setParentStudyCourse(null);
   }
 
-  public void setParentStudyCourse(StudyCourse parentStudyCourse) {
+  private void setParentStudyCourse(StudyCourse parentStudyCourse) {
     if (parentStudyCourse != null) {
       if (!this.studyDirections.isEmpty()) {
         throw new RuntimeException("A study direction must not have study directions!");

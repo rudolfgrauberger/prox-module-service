@@ -13,19 +13,19 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 @Slf4j
-public class HopsService {
+public class HopsStudyCourseService {
 
   private final HopsClient hopsClient;
 
   private final StudyCourseRepository studyCourseRepository;
 
-  private final StudyCourseMappingRepository studyCourseMappingRepository;
+  private final HopsStudyCourseMappingRepository hopsStudyCourseMappingRepository;
 
-  public HopsService(HopsClient hopsClient, StudyCourseRepository studyCourseRepository,
-      StudyCourseMappingRepository studyCourseMappingRepository) {
+  public HopsStudyCourseService(HopsClient hopsClient, StudyCourseRepository studyCourseRepository,
+      HopsStudyCourseMappingRepository hopsStudyCourseMappingRepository) {
     this.hopsClient = hopsClient;
     this.studyCourseRepository = studyCourseRepository;
-    this.studyCourseMappingRepository = studyCourseMappingRepository;
+    this.hopsStudyCourseMappingRepository = hopsStudyCourseMappingRepository;
   }
 
   public void importStudyCourses() {
@@ -44,7 +44,7 @@ public class HopsService {
     for (HopsStudyCourse hopsStudyCourse : hopsStudyCourses) {
 
       // Parse relevant data and convert to domain model
-      HopsStudyCourseId hopsId = new HopsStudyCourseId(hopsStudyCourse.getKuerzel());
+      HopsStudyCourseId hopsId = new HopsStudyCourseId(hopsStudyCourse.getBezeichnung());
       String[] tokens = hopsStudyCourse.getBezeichnung().split(": ");
       AcademicDegree academicDegree =
           tokens[0].equals("Master") ? AcademicDegree.MASTER : AcademicDegree.BACHELOR;
@@ -52,7 +52,7 @@ public class HopsService {
 
       // Update existing study course with new data or create a new one from scratch
       StudyCourse studyCourse;
-      Optional<StudyCourseMapping> studyCourseMapping = studyCourseMappingRepository
+      Optional<HopsStudyCourseMapping> studyCourseMapping = hopsStudyCourseMappingRepository
           .findByHopsId(hopsId);
       if (studyCourseMapping.isPresent()) {
         log.debug("Study course with HoPS ID " + hopsId + " already exists.");
@@ -65,7 +65,8 @@ public class HopsService {
         log.debug("Study course with HoPS ID " + hopsId + " does not exist yet.");
         studyCourse = new StudyCourse(studyCourseName, academicDegree);
         studyCourse = studyCourseRepository.save(studyCourse);
-        studyCourseMappingRepository.save(new StudyCourseMapping(hopsId, studyCourse.getId()));
+        hopsStudyCourseMappingRepository
+            .save(new HopsStudyCourseMapping(hopsId, studyCourse.getId()));
       }
 
       log.debug("Imported " + hopsStudyCourse + "into " + studyCourse);
