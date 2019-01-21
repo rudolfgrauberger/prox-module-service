@@ -1,9 +1,7 @@
 package de.thkoeln.projektboerse.moduleservice.studycourse;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import de.thkoeln.projektboerse.moduleservice.core.AbstractEntity;
-import de.thkoeln.projektboerse.moduleservice.hops.HopsStudyCourseId;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,10 +38,6 @@ public class StudyCourse extends AbstractEntity {
   @ManyToOne
   private StudyCourse parentStudyCourse;
 
-  @Setter
-  @JsonIgnore
-  private HopsStudyCourseId hopsId;
-
   public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
     this.name = name;
     this.academicDegree = academicDegree;
@@ -69,7 +63,7 @@ public class StudyCourse extends AbstractEntity {
     if (studyDirection.getParentStudyCourse() != null) {
       throw new RuntimeException("A study direction must only have one parent!");
     }
-    if (this.academicDegree != studyDirection.academicDegree) {
+    if (this.academicDegree != studyDirection.getAcademicDegree()) {
       throw new RuntimeException(
           "A study direction must have the same academic degree as the corresponding study course!");
     }
@@ -83,12 +77,14 @@ public class StudyCourse extends AbstractEntity {
   }
 
   public void setParentStudyCourse(StudyCourse parentStudyCourse) {
-    if (!this.studyDirections.isEmpty()) {
-      throw new RuntimeException("A study direction must not have study directions!");
-    }
-    if (this.academicDegree != parentStudyCourse.academicDegree) {
-      throw new RuntimeException(
-          "A study direction must have the same academic degree as the corresponding study course!");
+    if (parentStudyCourse != null) {
+      if (!this.studyDirections.isEmpty()) {
+        throw new RuntimeException("A study direction must not have study directions!");
+      }
+      if (this.academicDegree != parentStudyCourse.academicDegree) {
+        throw new RuntimeException(
+            "A study direction must have the same academic degree as the corresponding study course!");
+      }
     }
     this.parentStudyCourse = parentStudyCourse;
   }
