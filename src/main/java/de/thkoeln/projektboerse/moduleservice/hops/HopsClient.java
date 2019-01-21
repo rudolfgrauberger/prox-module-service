@@ -10,4 +10,7 @@ public interface HopsClient {
   @GetMapping("?mode=courses")
   List<HopsStudyCourse> getHopsStudyCourses();
 
+  @GetMapping("?mode=list")
+  List<HopsModule> getHopsModules();
+
 }
