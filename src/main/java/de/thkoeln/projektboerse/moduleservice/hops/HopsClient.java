@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(value = "hops", url = "https://fhpwww.gm.fh-koeln.de/hops/api/module/api.php")
+@FeignClient(name = "hops", url = "https://fhpwww.gm.fh-koeln.de/hops/api/module/api.php")
 public interface HopsClient {
 
   @GetMapping("?mode=courses")
