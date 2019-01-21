@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractEntity {
+public abstract class AbstractEntity {
 
   @Id
   @GeneratedValue
