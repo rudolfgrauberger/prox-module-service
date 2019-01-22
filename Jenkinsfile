@@ -35,7 +35,7 @@ pipeline {
         }
         stage("Code Quality Check") {
             steps {
-                echo "Code Quality Check..."
+                echo "Code Quality Check...."
             }
         }
         stage("Deploy") {
