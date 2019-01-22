@@ -30,12 +30,12 @@ pipeline {
         }
         stage("Test") {
             steps {
-                echo "Testing....."
+                echo "Testing..."
             }
         }
         stage("Code Quality Check") {
             steps {
-                echo "Code Quality Check...."
+                echo "Code Quality Check..."
             }
         }
         stage("Deploy") {
