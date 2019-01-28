@@ -1,6 +1,5 @@
 # PTB Module Service
-
-## Description
+The purpose of this service ("ptb-module-service") is to .... 
 
 ## Installation
 
