@@ -1,5 +1,5 @@
 # PTB Module Service
-The purpose of this service is to provide information about study courses and modules, relevant for projects and topics inside the "Projekt- und Themenbörse (PTB)" of the TH Köln. 
+The purpose of this service is to provide information about study courses and modules, relevant for projects and topics inside the "Projekt- und Themenbörse (PTB)" web application of the TH Köln. 
 
 ## Installation
 
