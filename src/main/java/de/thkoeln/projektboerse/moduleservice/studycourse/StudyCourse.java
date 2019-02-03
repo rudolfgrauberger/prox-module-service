@@ -44,19 +44,19 @@ public class StudyCourse extends AbstractEntity {
   }
 
   public Set<StudyCourse> getStudyDirections() {
-    return Collections.unmodifiableSet(studyDirections);
+    return Collections.unmodifiableSet(this.studyDirections);
   }
 
   public Set<Module> getModules() {
-    return Collections.unmodifiableSet(modules);
+    return Collections.unmodifiableSet(this.modules);
   }
 
   public void addModule(Module module) {
-    modules.add(module);
+    this.modules.add(module);
   }
 
   public void removeModule(Module module) {
-    modules.remove(module);
+    this.modules.remove(module);
   }
 
   public void addStudyDirection(StudyCourse studyDirection) {
@@ -67,12 +67,12 @@ public class StudyCourse extends AbstractEntity {
       throw new RuntimeException(
           "A study direction must have the same academic degree as the corresponding study course!");
     }
-    studyDirections.add(studyDirection);
+    this.studyDirections.add(studyDirection);
     studyDirection.setParentStudyCourse(this);
   }
 
   public void removeStudyDirection(StudyCourse studyDirection) {
-    studyDirections.remove(studyDirection);
+    this.studyDirections.remove(studyDirection);
     studyDirection.setParentStudyCourse(null);
   }
 
