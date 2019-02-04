@@ -4,10 +4,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>de.thkoeln.projektboerse</groupId>
+  <groupId>io.archi-lab.projektboerse</groupId>
   <artifactId>module-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
 
   <name>module-service</name>
   <description>Module Service</description>
@@ -15,15 +14,15 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.1.RELEASE</version>
+    <version>2.1.2.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <spring-cloud.version>Greenwich.M3</spring-cloud.version>
+    <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
+    <dockerfile-maven.version>1.4.10</dockerfile-maven.version>
+    <docker.image.prefix>ptb.archi-lab.io</docker.image.prefix>
   </properties>
 
   <dependencies>
@@ -43,10 +42,10 @@
     <!--<groupId>org.springframework.boot</groupId>-->
     <!--<artifactId>spring-boot-starter-security</artifactId>-->
     <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.springframework.cloud</groupId>-->
-    <!--<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>-->
-    <!--</dependency>-->
+    <dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -107,6 +106,48 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <version>${dockerfile-maven.version}</version>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>install</phase>
+            <goals>
+              <goal>build</goal>
+              <!--<goal>push</goal>-->
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <repository>${docker.image.prefix}/${project.artifactId}</repository>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -115,9 +156,6 @@
       <id>spring-milestones</id>
       <name>Spring Milestones</name>
       <url>https://repo.spring.io/milestone</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
     </repository>
   </repositories>
 

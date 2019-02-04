@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  module-service:
+    image: ptb.archi-lab.io/module-service
+    ports:
+      - "9001:9001"
+    restart: always
+    networks:
+      - ptb
+
+networks:
+  ptb:
+    external: true

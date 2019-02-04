@@ -1,5 +1,3 @@
-#!/usr/bin/env groovy
-
 pipeline {
     agent any
     tools {
@@ -7,14 +5,14 @@ pipeline {
         jdk "JDK_8u191"
     }
     environment {
-        PROJECTNAME = "module-service"
+        REPOSITORY = "ptb.archi-lab.io"
+        IMAGE = "module-service"
     }
     stages {
         stage("Build") {
             steps {
-                sh "mvn clean package" // Führt den Maven build aus
-                sh "docker build -t ${PROJECTNAME} ." // baut die Java App auf dem Container
-                sh "docker image save -o ${PROJECTNAME}.tar ${PROJECTNAME}" // Docker image als tar Datei speichern
+                sh "mvn clean install" // Führt den Maven build aus
+                sh "docker image save -o ${IMAGE}.tar ${REPOSITORY}/${IMAGE}" // Docker image als tar Datei speichern
             }
         }
         stage('SonarQube Analysis') {
@@ -41,16 +39,16 @@ pipeline {
         stage("Deploy") {
             environment {
                 SERVERPORT = "22412"
-                YMLFILENAME = "docker-compose.yml"
+                YMLFILENAME = "docker-compose-module-service.yml"
                 SSHUSER = "jenkins"
                 SERVERNAME = "fsygs15.inf.fh-koeln.de"
             }
             steps {
-                sh "scp -P ${SERVERPORT} -v ${PROJECTNAME}.tar ${SSHUSER}@${SERVERNAME}:~/"     // Kopiert per ssh die tar Datei auf dem Produktionsserver
+                sh "scp -P ${SERVERPORT} -v ${IMAGE}.tar ${SSHUSER}@${SERVERNAME}:~/"     // Kopiert per ssh die tar Datei auf dem Produktionsserver
                 sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/projektboerse/"
                 sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
-                        "'docker image load -i ${PROJECTNAME}.tar; " +
-                        /*"docker network inspect ptb_infra-net &> /dev/null || docker network create ptb_infra-net; " + */ // when connecting to other services, enable this
+                        "'docker image load -i ${IMAGE}.tar; " +
+                        /*"docker network inspect ptb &> /dev/null || docker network create ptb; " + */ // when connecting to other services, enable this
                         "docker-compose -p ptb -f /srv/projektboerse/${YMLFILENAME} up -d'"
             }
         }
