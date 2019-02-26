@@ -42,13 +42,23 @@ public class HopsModuleService {
   public void importModules() {
 
     // Load study courses from HoPS API
-    List<HopsModule> hopsModules = this.hopsClient.getHopsModules();
+    List<HopsModule> hopsModules = null;
+
+    // Could catch exception if HoPS-API is completely down but since we have an in-memory database
+    // it would cause the old data to get wiped so we commented it out
+    hopsModules = this.hopsClient.getHopsModules();
+//    try {
+//      hopsModules = this.hopsClient.getHopsModules();
+//    } catch (Exception e) {
+//      HopsModuleService.log.info("HoPS-API is down!");
+//      return;
+//    }
 
     // Unfortunately the HoPS API just returns "null" in the response body if its backend is down
     // and does not reply with a corresponding error code or message and not even valid JSON so the
     // HopsClient just returns null instead of a list.
     if (hopsModules == null) {
-      HopsModuleService.log.debug("HoPS-API ist down!");
+      HopsModuleService.log.info("HoPS-API is down!");
       return;
     }
 
