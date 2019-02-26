@@ -56,7 +56,8 @@ public class HopsModuleService {
 
       // Find study course by searching for its ID in the mapping repository
       HopsStudyCourseId hopsStudyCourseId = new HopsStudyCourseId(hopsModule.getStudiengang());
-      UUID studyCourseId = this.hopsStudyCourseMappingRepository.findByHopsId(hopsStudyCourseId).get()
+      UUID studyCourseId = this.hopsStudyCourseMappingRepository.findByHopsId(hopsStudyCourseId)
+          .get()
           .getStudyCourseId();
       StudyCourse studyCourse = this.studyCourseRepository.findById(studyCourseId).get();
 

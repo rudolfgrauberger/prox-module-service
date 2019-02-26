@@ -55,14 +55,17 @@ public class HopsStudyCourseService {
       Optional<HopsStudyCourseMapping> studyCourseMapping = this.hopsStudyCourseMappingRepository
           .findByHopsId(hopsId);
       if (studyCourseMapping.isPresent()) {
-        HopsStudyCourseService.log.debug("Study course with HoPS ID " + hopsId + " already exists.");
-        studyCourse = this.studyCourseRepository.findById(studyCourseMapping.get().getStudyCourseId())
+        HopsStudyCourseService.log
+            .debug("Study course with HoPS ID " + hopsId + " already exists.");
+        studyCourse = this.studyCourseRepository
+            .findById(studyCourseMapping.get().getStudyCourseId())
             .get();
         studyCourse.setName(studyCourseName);
         studyCourse.setAcademicDegree(academicDegree);
         studyCourse = this.studyCourseRepository.save(studyCourse);
       } else {
-        HopsStudyCourseService.log.debug("Study course with HoPS ID " + hopsId + " does not exist yet.");
+        HopsStudyCourseService.log
+            .debug("Study course with HoPS ID " + hopsId + " does not exist yet.");
         studyCourse = new StudyCourse(studyCourseName, academicDegree);
         studyCourse = this.studyCourseRepository.save(studyCourse);
         this.hopsStudyCourseMappingRepository
