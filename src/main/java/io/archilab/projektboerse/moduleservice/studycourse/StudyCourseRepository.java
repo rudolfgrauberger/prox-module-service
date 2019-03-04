@@ -1,11 +1,11 @@
 package io.archilab.projektboerse.moduleservice.studycourse;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface StudyCourseRepository extends PagingAndSortingRepository<StudyCourse, UUID> {
 
-  Set<StudyCourse> findByAcademicDegree(AcademicDegree academicDegree);
+  List<StudyCourse> findByAcademicDegree(AcademicDegree academicDegree);
 
 }
