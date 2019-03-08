@@ -4,10 +4,10 @@ services:
   module-service:
     image: ptb.archi-lab.io/module-service
     ports:
-      - "9003:9003"
+      - "9001:9001"
     restart: always
     networks:
-      - ptb-gp-ss2019
+      - ptb
       - module-db
 
   module-db:
@@ -27,7 +27,7 @@ volumes:
   module-db-data:
 
 networks:
-  ptb-gp-ss2019:
+  ptb:
     external: true
   module-db:
 
