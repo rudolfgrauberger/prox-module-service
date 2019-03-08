@@ -38,7 +38,7 @@ pipeline {
         }
         stage("Deploy") {
             environment {
-                SERVERPORT = "22412"
+                SERVERPORT = "22413"
                 YMLFILENAME = "docker-compose-module-service.yml"
                 SSHUSER = "jenkins"
                 SERVERNAME = "fsygs15.inf.fh-koeln.de"
