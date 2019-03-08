@@ -5,7 +5,7 @@ pipeline {
         jdk "JDK_8u191"
     }
     environment {
-        REPOSITORY = "ptb.archi-lab.io"
+        REPOSITORY = "ptb-gp-ss2019.archi-lab.io"
         IMAGE = "module-service"
     }
     stages {
