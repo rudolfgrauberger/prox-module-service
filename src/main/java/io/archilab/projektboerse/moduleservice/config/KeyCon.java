@@ -70,9 +70,25 @@ class KeyCon extends KeycloakWebSecurityConfigurerAdapter
       .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
       .and()
       .authorizeRequests()
-      .antMatchers("/").permitAll()
-      .antMatchers("/*").permitAll()
-      .anyRequest().permitAll();
+      .antMatchers(HttpMethod.GET,"/module*").permitAll()
+ 	    .antMatchers(HttpMethod.GET,"/module/*").permitAll()
+ 	    .antMatchers(HttpMethod.GET,"/module/**").permitAll()
+ 	   .antMatchers("/module*").denyAll()
+	    .antMatchers("/module/*").denyAll()
+	    .antMatchers("/module/**").denyAll()
+ 	   .antMatchers(HttpMethod.GET,"/studyCourse*").permitAll()
+	    .antMatchers(HttpMethod.GET,"/studyCourse/*").permitAll()
+	    .antMatchers(HttpMethod.GET,"/studyCourse/**").permitAll()
+		   .antMatchers("/studyCourse*").denyAll()
+		    .antMatchers("/studyCourse/*").denyAll()
+		    .antMatchers("/studyCourse/**").denyAll()
+		    .antMatchers("/").permitAll()
+		    .antMatchers("/profile*").permitAll()
+		    .antMatchers("/profile/*").permitAll()
+		    .antMatchers("/profile/**").permitAll()
+		    
+//      .antMatchers("/*").permitAll()
+      .anyRequest().denyAll();
 //	    http
 //	    .cors()
 //        .and()
