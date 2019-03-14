@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
-@ComponentScan
+
 public class ModuleService {
 
   public static void main(String[] args) {
