@@ -15,6 +15,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,6 +34,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+
+
+@Profile("prod")
 @Configuration
 @EnableWebSecurity
 class KeyCon extends KeycloakWebSecurityConfigurerAdapter
@@ -74,25 +78,25 @@ class KeyCon extends KeycloakWebSecurityConfigurerAdapter
       .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
       .and()
       .authorizeRequests()
-//      .antMatchers(HttpMethod.GET,"/modules*").permitAll()
-// 	    .antMatchers(HttpMethod.GET,"/modules/*").permitAll()
-// 	    .antMatchers(HttpMethod.GET,"/modules/**").permitAll()
-// 	   .antMatchers("/modules*").denyAll()
-//	    .antMatchers("/modules/*").denyAll()
-//	    .antMatchers("/modules/**").denyAll()
-// 	   .antMatchers(HttpMethod.GET,"/studyCourses*").permitAll()
-//	    .antMatchers(HttpMethod.GET,"/studyCourses/*").permitAll()
-//	    .antMatchers(HttpMethod.GET,"/studyCourses/**").permitAll()
-//		   .antMatchers("/studyCourses*").denyAll()
-//		    .antMatchers("/studyCourses/*").denyAll()
-//		    .antMatchers("/studyCourses/**").denyAll()
-//		    .antMatchers("/").permitAll()
-//		    .antMatchers("/profile*").permitAll()
-//		    .antMatchers("/profile/*").permitAll()
-//		    .antMatchers("/profile/**").permitAll()
+      .antMatchers(HttpMethod.GET,"/modules*").permitAll()
+ 	    .antMatchers(HttpMethod.GET,"/modules/*").permitAll()
+ 	    .antMatchers(HttpMethod.GET,"/modules/**").permitAll()
+ 	   .antMatchers("/modules*").denyAll()
+	    .antMatchers("/modules/*").denyAll()
+	    .antMatchers("/modules/**").denyAll()
+ 	   .antMatchers(HttpMethod.GET,"/studyCourses*").permitAll()
+	    .antMatchers(HttpMethod.GET,"/studyCourses/*").permitAll()
+	    .antMatchers(HttpMethod.GET,"/studyCourses/**").permitAll()
+		   .antMatchers("/studyCourses*").denyAll()
+		    .antMatchers("/studyCourses/*").denyAll()
+		    .antMatchers("/studyCourses/**").denyAll()
+		    .antMatchers("/").permitAll()
+		    .antMatchers("/profile*").permitAll()
+		    .antMatchers("/profile/*").permitAll()
+		    .antMatchers("/profile/**").permitAll()
 
-//      .anyRequest().denyAll();
-		.anyRequest().permitAll();
+      .anyRequest().denyAll();
+//		.anyRequest().permitAll();
 
 	}
 	
@@ -115,6 +119,64 @@ class KeyCon extends KeycloakWebSecurityConfigurerAdapter
 	}
 	
 }
+
+
+
+
+@Profile("local")
+@Configuration
+@EnableWebSecurity
+class KeyConDevelopment extends KeycloakWebSecurityConfigurerAdapter
+{
+	@Override
+	protected void configure(HttpSecurity http) throws Exception
+	{
+		super.configure(http);
+		http
+	    .csrf()
+        .disable()     
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
+        .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
+        .and()
+        .authorizeRequests()
+	    .anyRequest().permitAll();  
+	}
+
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
+		keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+		auth.authenticationProvider(keycloakAuthenticationProvider);
+	}
+
+
+	@Override
+	protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+//		return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+		return new NullAuthenticatedSessionStrategy();
+	}
+
+	@Bean
+	public KeycloakConfigResolver KeycloakConfigResolver() {return new KeycloakSpringBootConfigResolver();}
+	
+	@Bean
+	public FilterRegistrationBean keycloakAuthenticationProcessingFilterRegistrationBean(
+	        KeycloakAuthenticationProcessingFilter filter) {
+	    FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
+	    registrationBean.setEnabled(false);
+	    return registrationBean;
+	}
+
+	@Bean
+	public FilterRegistrationBean keycloakPreAuthActionsFilterRegistrationBean(
+	        KeycloakPreAuthActionsFilter filter) {
+	    FilterRegistrationBean registrationBean = new FilterRegistrationBean(filter);
+	    registrationBean.setEnabled(false);
+	    return registrationBean;
+	}
+	
+}
+	
 	
 	
 
