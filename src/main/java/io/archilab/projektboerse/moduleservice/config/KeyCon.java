@@ -74,45 +74,26 @@ class KeyCon extends KeycloakWebSecurityConfigurerAdapter
       .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
       .and()
       .authorizeRequests()
-      .antMatchers(HttpMethod.GET,"/modules*").permitAll()
- 	    .antMatchers(HttpMethod.GET,"/modules/*").permitAll()
- 	    .antMatchers(HttpMethod.GET,"/modules/**").permitAll()
- 	   .antMatchers("/modules*").denyAll()
-	    .antMatchers("/modules/*").denyAll()
-	    .antMatchers("/modules/**").denyAll()
- 	   .antMatchers(HttpMethod.GET,"/studyCourses*").permitAll()
-	    .antMatchers(HttpMethod.GET,"/studyCourses/*").permitAll()
-	    .antMatchers(HttpMethod.GET,"/studyCourses/**").permitAll()
-		   .antMatchers("/studyCourses*").denyAll()
-		    .antMatchers("/studyCourses/*").denyAll()
-		    .antMatchers("/studyCourses/**").denyAll()
-		    .antMatchers("/").permitAll()
-		    .antMatchers("/profile*").permitAll()
-		    .antMatchers("/profile/*").permitAll()
-		    .antMatchers("/profile/**").permitAll()
-		    
-//      .antMatchers("/*").permitAll()
-      .anyRequest().denyAll();
-//	    http
-//	    .cors()
-//        .and()
-//	    .csrf()
-//        .disable()     
-//	    
-//        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // STATELESS
-//        .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
-//        .and()
-//        .authorizeRequests()
-//	    .antMatchers("/people/*").hasRole("user")
-//		.antMatchers("/people*").hasRole("user")
-//		.antMatchers("/qqq*").hasRole("user")
-//		.antMatchers(HttpMethod.POST, "/module/*").hasAnyRole("manage-all", "user")
-//        .antMatchers(HttpMethod.PUT, "/module/*").hasRole("user")
-//        
-//		.antMatchers("/**").authenticated()
-//        .anyRequest().denyAll();
-////		.antMatchers("/*").anonymous()
-////		.anyRequest().permitAll();
+//      .antMatchers(HttpMethod.GET,"/modules*").permitAll()
+// 	    .antMatchers(HttpMethod.GET,"/modules/*").permitAll()
+// 	    .antMatchers(HttpMethod.GET,"/modules/**").permitAll()
+// 	   .antMatchers("/modules*").denyAll()
+//	    .antMatchers("/modules/*").denyAll()
+//	    .antMatchers("/modules/**").denyAll()
+// 	   .antMatchers(HttpMethod.GET,"/studyCourses*").permitAll()
+//	    .antMatchers(HttpMethod.GET,"/studyCourses/*").permitAll()
+//	    .antMatchers(HttpMethod.GET,"/studyCourses/**").permitAll()
+//		   .antMatchers("/studyCourses*").denyAll()
+//		    .antMatchers("/studyCourses/*").denyAll()
+//		    .antMatchers("/studyCourses/**").denyAll()
+//		    .antMatchers("/").permitAll()
+//		    .antMatchers("/profile*").permitAll()
+//		    .antMatchers("/profile/*").permitAll()
+//		    .antMatchers("/profile/**").permitAll()
+
+//      .anyRequest().denyAll();
+		.anyRequest().permitAll();
+
 	}
 	
 	

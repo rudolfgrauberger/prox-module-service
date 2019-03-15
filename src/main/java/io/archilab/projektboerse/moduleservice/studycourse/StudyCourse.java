@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -15,6 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -30,6 +33,10 @@ public class StudyCourse extends AbstractEntity {
   private AcademicDegree academicDegree;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+		  name = "module_courses",
+		  joinColumns = { @JoinColumn(name = "study_course_id", referencedColumnName = "id") },
+		  inverseJoinColumns = { @JoinColumn(name = "module_id", referencedColumnName = "id") } )
   private Set<Module> modules = new HashSet<>();
 
   @OneToMany(mappedBy = "parentStudyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
