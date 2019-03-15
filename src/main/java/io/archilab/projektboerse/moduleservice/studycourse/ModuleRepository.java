@@ -9,7 +9,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public interface ModuleRepository extends PagingAndSortingRepository<Module, UUID> {
 	
 	 Page<Module> findByName_NameContainingIgnoreCase (@Param("name") String name, Pageable pageable);
