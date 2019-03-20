@@ -50,6 +50,7 @@ class KeyCon extends KeycloakWebSecurityConfigurerAdapter
 		keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
 		auth.authenticationProvider(keycloakAuthenticationProvider);
 	}
+	
 
 	/**
 	 * Defines the session authentication strategy.
