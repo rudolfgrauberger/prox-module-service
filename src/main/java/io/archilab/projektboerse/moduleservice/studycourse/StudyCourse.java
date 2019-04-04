@@ -32,7 +32,7 @@ public class StudyCourse extends AbstractEntity {
   @Setter
   private AcademicDegree academicDegree;
 
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch=FetchType.EAGER)
   @JoinTable(
 		  name = "module_courses",
 		  joinColumns = { @JoinColumn(name = "study_course_id", referencedColumnName = "id") },
@@ -44,6 +44,7 @@ public class StudyCourse extends AbstractEntity {
 
   @ManyToOne
   private StudyCourse parentStudyCourse;
+
 
   public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
     this.name = name;
@@ -65,6 +66,10 @@ public class StudyCourse extends AbstractEntity {
   public void removeModule(Module module) {
     this.modules.remove(module);
   }
+  
+  public void removeAllModules() {
+	  studyDirections = new HashSet<>();
+	  }
 
   public void addStudyDirection(StudyCourse studyDirection) {
     if (studyDirection.getParentStudyCourse() != null) {
