@@ -56,7 +56,6 @@ public class CompImportInitialization {
 
 	private void getDatta()
 	{
-		// TODO  error no session transaction   workaround fetch eager instead of lazy
 		CompImportInitialization.log.info("Start Data Import HOPS");
 
 		ArrayList<ModuleHOPS> moduleHopsGET = (ArrayList<ModuleHOPS>)importData("MODULE",hopsApiGet::getModules);
@@ -68,11 +67,8 @@ public class CompImportInitialization {
 		CompImportInitialization.log.info("Save and Update");
 		
 		startupLoadingService.updateData(moduleHopsGET,studiengängeHopsGET,mappingHopsGET);
-
 		
 	}
-
-	
 
 	// Hier findet der Import statt, erst wird versucht, aus dem Hops zu importieren, danach wird versucht, aus den json dateien zu importieren
 	private ArrayList<?> importData( String type, Supplier<ArrayList> getRequest)

@@ -38,9 +38,7 @@ public class StartupLoadingService
 
 	@Autowired
 	private ModuleRepository moduleRepository;
-	
-	
-	
+
 	public void updateData(ArrayList<ModuleHOPS> moduleHopsGET, ArrayList<StudiengängeHOPS> studiengängeHopsGET,
 			ArrayList<ModStuMappingHOPS> mappingHopsGET) {
 
