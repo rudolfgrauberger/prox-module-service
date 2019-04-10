@@ -1,5 +1,6 @@
 package io.archilab.projektboerse.moduleservice.hops;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,10 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -59,10 +61,16 @@ public class CompImportInitialization {
 	  { 
 	      return () -> {
 	    	  getDatta();
+	    	  // test mehrfach import update
+	    	  getDatta();
+//	    	  getDatta();
+//	    	  getDatta();
 	      };
 	  }
-
 	  
+	  private static int loop=1;
+
+	  @Transactional()
 	  private void getDatta()
 	  {
 		  CompImportInitialization.log.info("Start Data Import HOPS");
@@ -93,7 +101,7 @@ public class CompImportInitialization {
 				date_active = parser.parse(inputDate);
 			} catch (ParseException e) {
 				CompImportInitialization.log.info("Failed to parse Date");
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			  boolean isOld=false;
@@ -106,10 +114,9 @@ public class CompImportInitialization {
 				} catch (ParseException e) {
 					CompImportInitialization.log.info("Failed to parse Date");
 					  
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				  // TODO
+				  
 				  if(module.getMODULKUERZEL().equals(tempModule.getMODULKUERZEL()) && date_active.compareTo(date_other)<0)
 				  {
 					  isOld=true;
@@ -120,11 +127,33 @@ public class CompImportInitialization {
 			  {
 				  moduleHopsGET.remove(i);
 				  i--;
+			  }	  
+		  }
+		  
+		  //  doppelungen entfernen ModStuMappingHOPS aber nur vlt. weil dort nur ide kürzel von intersse sind, nciht die weiteren daten. und der primary key unklar ist.
+		  // wenn sich die kürzel nicht ändern können, macht es keinen sinn.
+		  
+		  
+		  {
+
+			  for (StudyCourse sc : studyCourseRepository.findAll()) 
+			  {
+				  CompImportInitialization.log.info(sc.getName()+" mod co "+sc.getId());
+//				  int counter = 0;
+//				  for (Module module : sc.getModules()) 
+//				  {
+//					  counter+=1;
+//					  if(module.getName().getName().equals("WPF Mobile IT-Security"))
+//					  {
+//						  CompImportInitialization.log.info("liked real "+sc.getName().getName());
+//					  }
+//				  }
+//				  CompImportInitialization.log.info(sc.getName()+" mod co "+String.valueOf(counter));
+//				  
 			  }
 			  
 		  }
 		  
-		  // TODO  doppelungen entfernen ModStuMappingHOPS
 		  
 		  // study courses vorbereiten
 		  for (StudiengängeHOPS studyCourse : studiengängeHopsGET) 
@@ -134,7 +163,7 @@ public class CompImportInitialization {
 			  AcademicDegree academicDegree = null;
 			  StudyCourse newSC = null;
 			  
-			  CompImportInitialization.log.info(kürzel);
+//			  CompImportInitialization.log.info(kürzel);
 			  
 			  
 			  if(studyCourse.getABSCHLUSSART().equals("Master"))
@@ -153,138 +182,305 @@ public class CompImportInitialization {
 			  
 			  if(!scMapping.isPresent())
 			  {
-				 
+				 // prepare to add new study Course  and save the mapping
 				  newSC = new StudyCourse(new StudyCourseName(studyCourse.getSTUDIENGANG()),academicDegree);
+				  
 				  HopsStudyCourseMapping newStudyCourseMapper = new HopsStudyCourseMapping(new HopsStudyCourseId(kürzel),newSC.getId());
 				  hopsStudyCourseMappingRepository.save(newStudyCourseMapper);
-//				  CompImportInitialization.log.info("neu "+newSC.getId().toString());
-				  
-				  
+				 
+			  
 			  }
 			  else
 			  {
-				
-				  Optional<StudyCourse> optSC= studyCourseRepository.findById(scMapping.get().getStudyCourseId());
-				  // woher kommt diese UUID   mytery  uuid  irngedow wird stuidengänge reinge added  was falshc sit.
-				  
-				  // am ebstne alles droppen und neu import.
+				  // get study Course from database
+				  Optional<StudyCourse> optSC= studyCourseRepository.findById(scMapping.get().getStudyCourseId());	  
 				  newSC=optSC.get();
+				  
 			  }
 			  
 			  // fill study course or update
 			  newSC.setAcademicDegree(academicDegree);
 			  newSC.setName(new StudyCourseName(studyCourse.getSTUDIENGANG()));
-			  newSC.removeAllModules();
-			  CompImportInitialization.log.info("save "+newSC.getId().toString());
-			  newSC = studyCourseRepository.save(newSC);
-			  
+//			  newSC.removeAllModules();
+			 
+			  newSC = studyCourseRepository.save(newSC);	  
 		  }
+
+		  // module vorbereiten
+		  // leider ist ein praxisprojekt gemapped auf mehrere studiengänge, aber bachelorarbeiten sind es nicht.
+		  // um konsistenz zu erreichen wird hier nun das praxixprojekt modul geklont, wenn es mherere studiengänge hat.
 		  
-		  
-		  // über zwishcentabelle
-		  // find moduels by kürzel
-		  // nimm nueste date version
-		  // parse nur backelor arbeit praxixprojekt master arbeit  ohne kolloquium
-		  // speichern
-		  // als echtes klass ienfügen repo
-		  
-		  
-		  
-		  
+	  
 		// module einarbeiten
+		  CompImportInitialization.log.info("module einarbeiten");
+		  
+		  {
+			  long size= StreamSupport.stream(moduleRepository.findAll().spliterator(), false).count();
+			  CompImportInitialization.log.info("Anzahl Module "+String.valueOf(size));
+			   
+		  }
+		  // TODO  output studiengänge anzahl deren module anzahl
+		  
+		 
+
+//		  for (Module module : moduleRepository.findAll()) 
+//		  {
+//			  
+//			  CompImportInitialization.log.info(module.getName().getName());
+//		  }
+		  
 		  for (ModuleHOPS module : moduleHopsGET) 
 		  {
-			  String bezeichnung = module.getMODULBEZEICHNUNG();
+//			  String bezeichnung = module.getMODULBEZEICHNUNG();
+//			  
+//			  if( !( bezeichnung.equals("Master Thesis (English)") || bezeichnung.equals("Master Thesis and Colloquium (English)") || 
+//					  bezeichnung.equals("Masterarbeit") ||   bezeichnung.equals("Masterarbeit und Kolloquium (German)") 
+//					  ||  bezeichnung.equals("Bachelorarbeit")  ||  bezeichnung.equals("Kolloquium zur Bachelorarbeit")    
+//					  ||  bezeichnung.equals("Bachelor Kolloquium")   ||  bezeichnung.equals("Bachelor Arbeit ")
+//					  ||  bezeichnung.equals("Bachelor Arbeit ") Praxisprojekt  Masterarbeit und Kolloquium  ) )
+//			  {
+//				  continue;
+//			  }
 			  
-			  if( !( bezeichnung.equals("Master Thesis (English)") || bezeichnung.equals("Master Thesis and Colloquium (English)") || 
-					  bezeichnung.equals("Masterarbeit") ||   bezeichnung.equals("Masterarbeit und Kolloquium (German)") 
-					  ||  bezeichnung.equals("Bachelorarbeit")  ||  bezeichnung.equals("Kolloquium zur Bachelorarbeit")    
-					  ||  bezeichnung.equals("Bachelor Kolloquium")   ||  bezeichnung.equals("Bachelor Arbeit ")
-					  ||  bezeichnung.equals("Bachelor Arbeit ")   ) )
-			  {
-				  continue;
-			  }
+			  
+			  ArrayList<ModStuMappingHOPS> doppelt = new ArrayList<>();
+			  
 			  String kürzel = module.getMODULKUERZEL();
-			  // TODO  kein dateversion für id
-			  Optional<HopsModuleMapping> moMapping = hopsModuleMappingRepository.findByHopsId(new HopsModuleId(kürzel, module.getDATEVERSION()));
-		
-			  Module newModule = null;
-			  
-			  if(!moMapping.isPresent())
-			  {
-				  
-				  newModule = new Module(new ModuleName (module.getMODULBEZEICHNUNG()), new ModuleDescription ( (module.getINHALT()!=null ? module.getINHALT() : "")   ));
-				  HopsModuleMapping newModuleMapping = new HopsModuleMapping(new HopsModuleId(kürzel, module.getDATEVERSION()),newModule.getId());
-				  hopsModuleMappingRepository.save(newModuleMapping);
-			  }
-			  else
-			  {
-				  Optional<Module> optMO= moduleRepository.findById(moMapping.get().getModuleId());
-				  newModule=optMO.get();
-			  }
-
-			  // fill study course or update
-			  newModule.setName(new ModuleName (module.getMODULBEZEICHNUNG()));
-			  newModule.setDescription(new ModuleDescription ( (module.getINHALT()!=null ? module.getINHALT() : "") ));
-			  newModule = moduleRepository.save(newModule);
-			 
-		  }
-		  
-		  
-		  // link studyCourses and modules
-		  Iterable<StudyCourse> iterable = studyCourseRepository.findAll();
-		  List<StudyCourse> studyCourses = new ArrayList<>();
-		  iterable.forEach(studyCourses::add);
-		  for (StudyCourse studyCourse : studyCourses) 
-		  {
-			  CompImportInitialization.log.info("fill "+studyCourse.getId().toString());
-			  Optional<HopsStudyCourseMapping> mappero = hopsStudyCourseMappingRepository.findByStudyCourseId(studyCourse.getId());
-			  String studyCourseKürzel = mappero.get().getHopsId().getStudy_course_kürzel();
-			  List<UUID> moduelID= new ArrayList<UUID>();
 			  for (ModStuMappingHOPS mapping : mappingHopsGET) 
 			  {
-				  // get alle modulkürzel
-				  String stgaK=mapping.getSG_KZ();
-				  String moK=mapping.getMODULKUERZEL();
-				  if(studyCourseKürzel.equals(stgaK))
+				  // finde das modul
+				  if(mapping.getMODULKUERZEL().equals(kürzel) )
 				  {
-					  Iterable<HopsModuleMapping> it2 = hopsModuleMappingRepository.findAll();
-					  List<HopsModuleMapping> modules = new ArrayList<>();
-					  it2.forEach(modules::add);
-					  for (HopsModuleMapping hopsModuleMapping : modules) 
-					  {
-						  if(hopsModuleMapping.getHopsId().getKuerzel().equals(moK))
-						  {
-							  moduelID.add( hopsModuleMapping.getModuleId());
-						  }
-						 
-					  }
-					  
+					  doppelt.add(mapping);
 				  }
 			  }
-			  // fill modules
-			  for (UUID uuid : moduelID) 
-			  {
-				  Optional<Module> moduleO = moduleRepository.findById(uuid);
-				  if(moduleO.isPresent())
-				  {
-//					  // to initialsie the collection so it gets loaded  otherwise transaction error
-//					  moduleO.get().getId();
-//					  studyCourse.getModules().size();
-					  studyCourse.addModule(moduleO.get());
-				  }
-			  }
+//			  CompImportInitialization.log.info("anzahl "+String.valueOf(doppelungen));
+	  
+			  Iterable<StudyCourse> iterable = studyCourseRepository.findAll();
+
+			  List<StudyCourse> studyCourses = new ArrayList<>();
+			  iterable.forEach(studyCourses::add);
+
+			  Module newModule = null;
 			  
-		  }
-		  studyCourseRepository.saveAll(studyCourses);
+			  List<HopsModuleMapping> moMapping = hopsModuleMappingRepository.findByHopsId(new HopsModuleId(kürzel, module.getDATEVERSION()));
+			 
+			  // erstmal update existierende module
 	
+			  for (HopsModuleMapping moMapped : moMapping) 
+			  {
+				  Optional<Module> optMO= moduleRepository.findById(moMapped.getModuleId());
+				  newModule=optMO.get();  
+				  fillModule(newModule,module);
+
+				  moduleRepository.save(newModule);
+			  }  
+			  
+			  for (ModStuMappingHOPS doppelEle : doppelt) 
+			  {
+				  
+				  // teste, ob das element bereits existiert
+				 Optional<HopsStudyCourseMapping> hopsScMap = hopsStudyCourseMappingRepository.findByHopsId(new HopsStudyCourseId(doppelEle.getSG_KZ()));
+				 if(hopsScMap.isPresent())
+				 {
+
+					 Optional<StudyCourse> optSc = studyCourseRepository.findById(hopsScMap.get().getStudyCourseId());
+					 if(optSc.isPresent())
+					 {
+		
+						 // wenn nein, kreire ein neues modul und speichere es ab
+						 boolean moduleMissing = true;
+						
+						 StudyCourse tempSc = optSc.get();
+
+						 for (Module tempModule : tempSc.getModules()) 
+						 {
+							 
+							 Optional<HopsModuleMapping> tempModuleMapping = hopsModuleMappingRepository.findByModuleId(tempModule.getId());
+							 if(tempModuleMapping.isPresent())
+							 {
+
+								 
+								 if( tempModuleMapping.get().getHopsId().getKuerzel().equals(module.getMODULKUERZEL())
+									|| tempModule.getName().getName().equals(module.getMODULBEZEICHNUNG()) )
+								 {
+									  // es kann sein, dass es mehrere module gibt, mit gleichem namen und gleicher verlinkung zu studiengängen.
+									  // dann ist es unmöglich, eines der beiden rauszufiltern sinnvoll. nicht sinnvol unterscheidbar
+									  // daher regel: wenn es per name bereits existiert, wird es rausgefiltert alle weiteren.
+									  
+									  // als beispiel modul: Praxisprojekt
+									 
+//									CompImportInitialization.log.info("found  "+module.getMODULBEZEICHNUNG());
+								 	moduleMissing=false;
+								 	break;
+								 }
+							 }
+							 else
+							 {
+								 CompImportInitialization.log.info("missing map");
+							 }
+						 }
+						 
+						 
+						 if(moduleMissing==true)
+						 {  
+
+							 newModule = createAndFillModule(module);
+							 newModule = moduleRepository.save(newModule);
+		
+							 tempSc.addModule(newModule);
+							 hopsModuleMappingRepository.save(new HopsModuleMapping(new HopsModuleId(module.getMODULKUERZEL(), module.getDATEVERSION()), newModule.getId()));
+							 // verlinke es mit studiengang
+							 tempSc = studyCourseRepository.save(tempSc);
+ 
+						 }
+					 }
+					 else
+					 {
+						 CompImportInitialization.log.info("partly Error  study Course should not be missing ");
+					 } 
+				 }
+				 else
+				 {
+					 CompImportInitialization.log.info("partly Error  study Course mapping should not be missing" +doppelEle.getSG_KZ()+" "+doppelEle.getID());
+				 
+				 } 
+				  
+			  }
+		  }
 		  
+		  for (StudyCourse sc : studyCourseRepository.findAll()) 
+		  {
+			  CompImportInitialization.log.info(String.valueOf(sc.getModules().size()));
+				 
+		  }
+		  int css = 0;
+		  for (Module mo : moduleRepository.findAll()) 
+		  {
+			  css++;
+			  
+				 
+		  }
+		  loop+=1;
+		  CompImportInitialization.log.info(String.valueOf(css));
+		  		  
 		  CompImportInitialization.log.info("All Done. Start normal operation.");
 		  
-		    
+		   
+			  
+			  
+			//						  StudyCourse sc = studyCourse.get();
+//			  
+//			  // es kann sein, dass es mehrere module gibt, mit gleichem namen und gleicher verlinkung zu studiengängen.
+//			  // dann ist es unmöglich, eines der beiden rauszufiltern sinnvoll. nicht sinnvol unterscheidbar
+//			  // daher regel: wenn es per name bereits existiert, wird es rausgefiltert alle weiteren.
+//			  
+//			  // als beispiel moddul: Praxisprojekt
+//			  boolean istEinfachVorhanden=true;
+//			  for(Module modEle : sc.getModules())
+//			  {
+//				  if(modEle.getName().equals(newModule.getName())) 
+//				  {
+////					  CompImportInitialization.log.info("doppelung name");
+//					  istEinfachVorhanden=false;
+//					  break;
+//					  
+//				  }
+//			  }
+//			  if(istEinfachVorhanden)
+//			  {
+//				  CompImportInitialization.log.info("doppelung erkannt");
+////				  CompImportInitialization.log.info(module.getMODULKUERZEL()+" "+newModule.getName());
+//				  sc.addModule(newModule);
+//				  hopsModuleMappingRepository.save(newModuleMapping);
+//				  moduleRepository.save(newModule);
+//				  studyCourseRepository.save(sc);
+//			  }
+			  
+	
+
+		
+		  
+		  // praxis projekt einmla veraltlet einmal ohne verbidnug zu studiengang daher nciht importeiren
+
+		  // link studyCourses and modules
+		  
+		  // here error no session  workaround fetch eager    
+		 
+//		  Iterable<StudyCourse> iterable = studyCourseRepository.findAll();
+//
+//		  List<StudyCourse> studyCourses = new ArrayList<>();
+//		  iterable.forEach(studyCourses::add);
+////		  while (iterable.iterator().hasNext() ) {
+////			  StudyCourse studyCourse = (StudyCourse) iterable.iterator().next();
+////		  }
+//		  
+//		  for (StudyCourse studyCourse : studyCourses) 
+//		  {
+//			  studyCourse = studyCourseRepository.findById(studyCourse.getId()).get();
+//			 
+//			  studyCourse.getModules().size();
+//			  CompImportInitialization.log.info("fill "+studyCourse.getId().toString());
+//			  Optional<HopsStudyCourseMapping> mappero = hopsStudyCourseMappingRepository.findByStudyCourseId(studyCourse.getId());
+//			  String studyCourseKürzel = mappero.get().getHopsId().getStudy_course_kürzel();
+//			  List<UUID> moduelID= new ArrayList<UUID>();
+//			  for (ModStuMappingHOPS mapping : mappingHopsGET) 
+//			  {
+//				  // get alle modulkürzel
+//				  String stgaK=mapping.getSG_KZ();
+//				  String moK=mapping.getMODULKUERZEL();
+//				  if(studyCourseKürzel.equals(stgaK))
+//				  {
+//					  Iterable<HopsModuleMapping> it2 = hopsModuleMappingRepository.findAll();
+//					  List<HopsModuleMapping> modules = new ArrayList<>();
+//					  it2.forEach(modules::add);
+//					  for (HopsModuleMapping hopsModuleMapping : modules) 
+//					  {
+//						  if(hopsModuleMapping.getHopsId().getKuerzel().equals(moK))
+//						  {
+//							  if(moduleRepository.findById(hopsModuleMapping.getModuleId()).get().)
+//							  moduelID.add( );
+//						  }
+//						 
+//					  }
+//					  
+//				  }
+//			  }
+//			  // fill modules
+//			  for (UUID uuid : moduelID) 
+//			  {
+//				  Optional<Module> moduleO = moduleRepository.findById(uuid);
+//				  if(moduleO.isPresent())
+//				  {
+////					  // to initialsie the collection so it gets loaded  otherwise transaction error
+//					  moduleO.get().getId();
+//					  studyCourse.getModules().size();
+//					  studyCourse.addModule(moduleO.get());
+//				  }
+//			  }
+//			  studyCourseRepository.save(studyCourse);
+//			  
+//		  }
+////		  studyCourseRepository.saveAll(studyCourses);
+//	
+//		  
+		  
 	  }
 	  
-	  private ArrayList<?> importData( String type, Supplier<ArrayList> getRequest)
+	  private Module createAndFillModule(ModuleHOPS module) 
+	  {
+		  Module newM = new Module(new ModuleName(""),new ModuleDescription(""));
+		  fillModule(newM,module);
+		  return newM;
+	  }
+
+	private void fillModule(Module newModule, ModuleHOPS module) 
+	{
+		newModule.setName(new ModuleName (module.getMODULBEZEICHNUNG()));
+		newModule.setDescription(new ModuleDescription ( (module.getINHALT()!=null ? module.getINHALT() : "") ));	
+	}
+
+	private ArrayList<?> importData( String type, Supplier<ArrayList> getRequest)
 	  {
 		  ArrayList<?> dataToImport = null;
 		  try 

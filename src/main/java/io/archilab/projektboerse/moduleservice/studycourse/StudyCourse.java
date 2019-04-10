@@ -11,6 +11,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +35,7 @@ public class StudyCourse extends AbstractEntity {
   @Setter
   private AcademicDegree academicDegree;
 
+  // TODO workaround fetch eager    muss entfernt werden
   @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch=FetchType.EAGER)
   @JoinTable(
 		  name = "module_courses",
@@ -39,12 +43,12 @@ public class StudyCourse extends AbstractEntity {
 		  inverseJoinColumns = { @JoinColumn(name = "module_id", referencedColumnName = "id") } )
   private Set<Module> modules = new HashSet<>();
 
+  
   @OneToMany(mappedBy = "parentStudyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<StudyCourse> studyDirections = new HashSet<>();
 
   @ManyToOne
   private StudyCourse parentStudyCourse;
-
 
   public StudyCourse(StudyCourseName name, AcademicDegree academicDegree) {
     this.name = name;
@@ -68,7 +72,7 @@ public class StudyCourse extends AbstractEntity {
   }
   
   public void removeAllModules() {
-	  studyDirections = new HashSet<>();
+	  this.modules = new HashSet<>();
 	  }
 
   public void addStudyDirection(StudyCourse studyDirection) {
