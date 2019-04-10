@@ -36,7 +36,7 @@ public class StudyCourse extends AbstractEntity {
   private AcademicDegree academicDegree;
 
   // TODO workaround fetch eager    muss entfernt werden
-  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch=FetchType.EAGER)
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch=FetchType.LAZY)
   @JoinTable(
 		  name = "module_courses",
 		  joinColumns = { @JoinColumn(name = "study_course_id", referencedColumnName = "id") },
