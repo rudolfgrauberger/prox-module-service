@@ -91,23 +91,27 @@ public class StartupLoadingService
 		// es gibt keinen anderen sinnhaften Unterschied.
 		// daher muss es explizit gefiltert werden.
 		
-		for (ModuleHOPS moduleHops : moduleHopsGET) 
+		for(int i = moduleHopsGET.size()-1;i==0;i--)
 		{
+			ModuleHOPS moduleHops = moduleHopsGET.get(i);
+			
 			if(moduleHops.getMODULKUERZEL().equals("1384"))
 			{
-				moduleHopsGET.remove(moduleHops);
+				moduleHopsGET.remove(i);
 			}
+			
 		}
 		
-		for (ModStuMappingHOPS modStuMappingHOPS : mappingHopsGET) 
+		for(int i=mappingHopsGET.size()-1;i==0;i--)
 		{
+			ModStuMappingHOPS modStuMappingHOPS = mappingHopsGET.get(i);
+			
 			if(modStuMappingHOPS.getMODULKUERZEL().equals("1384"))
 			{
-				mappingHopsGET.remove(modStuMappingHOPS);
+				moduleHopsGET.remove(i);
 			}
+			
 		}
-
-		
 
 		//  doppelungen entfernen ModStuMappingHOPS aber nur vlt. weil dort nur ide kürzel von intersse sind, nciht die weiteren daten. und der primary key unklar ist.
 		// wenn sich die kürzel nicht ändern können, macht es keinen sinn.
