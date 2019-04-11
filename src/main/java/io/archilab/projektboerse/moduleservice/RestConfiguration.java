@@ -30,16 +30,4 @@ public class RestConfiguration implements RepositoryRestConfigurer {
     }
     
     
-//    @Autowired
-//    EntityManagerFactory emf;
-//    @Autowired
-//    private DataSource dataSource;
-//
-//    @Bean(name = "transactionManager")
-//    public PlatformTransactionManager transactionManager() {
-//        JpaTransactionManager tm = new JpaTransactionManager();
-//        tm.setEntityManagerFactory(emf);
-//        tm.setDataSource(dataSource);
-//        return tm;
-//    }
 }

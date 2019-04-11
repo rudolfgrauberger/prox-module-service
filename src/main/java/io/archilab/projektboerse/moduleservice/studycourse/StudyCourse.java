@@ -35,15 +35,15 @@ public class StudyCourse extends AbstractEntity {
   @Setter
   private AcademicDegree academicDegree;
 
-  // TODO workaround fetch eager    muss entfernt werden
+//  @JoinTable(
+//		  name = "module_courses",
+//		  joinColumns = { @JoinColumn(name = "study_course_id", referencedColumnName = "id") },
+//		  inverseJoinColumns = { @JoinColumn(name = "module_id", referencedColumnName = "id") } )
+  
   @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch=FetchType.LAZY)
-  @JoinTable(
-		  name = "module_courses",
-		  joinColumns = { @JoinColumn(name = "study_course_id", referencedColumnName = "id") },
-		  inverseJoinColumns = { @JoinColumn(name = "module_id", referencedColumnName = "id") } )
+  @JoinColumn(name = "module_id")
   private Set<Module> modules = new HashSet<>();
 
-  
   @OneToMany(mappedBy = "parentStudyCourse", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<StudyCourse> studyDirections = new HashSet<>();
 
