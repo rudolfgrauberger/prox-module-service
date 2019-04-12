@@ -91,7 +91,7 @@ public class StartupLoadingService
 		// es gibt keinen anderen sinnhaften Unterschied.
 		// daher muss es explizit gefiltert werden.
 		
-		for(int i = moduleHopsGET.size()-1;i==0;i--)
+		for(int i = moduleHopsGET.size()-1;i>=0;i--)
 		{
 			ModuleHOPS moduleHops = moduleHopsGET.get(i);
 			
@@ -102,7 +102,7 @@ public class StartupLoadingService
 			
 		}
 		
-		for(int i=mappingHopsGET.size()-1;i==0;i--)
+		for(int i=mappingHopsGET.size()-1;i>=0;i--)
 		{
 			ModStuMappingHOPS modStuMappingHOPS = mappingHopsGET.get(i);
 			
