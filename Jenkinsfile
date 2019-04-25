@@ -1,8 +1,8 @@
 pipeline {
-    agent any
-    tools {
-        maven "apache-maven-3.6.0"
-        jdk "JDK_8u191"
+    agent {
+        docker {
+            image 'openjdk:8u191-jdk-alpine3.8'
+        }
     }
     environment {
         REPOSITORY = "ptb-gp-ss2019.archi-lab.io"
@@ -12,7 +12,6 @@ pipeline {
         stage("Build") {
             steps {
                 sh "mvn clean install" // Führt den Maven build aus
-                sh "docker image save -o ${IMAGE}.tar ${REPOSITORY}/${IMAGE}" // Docker image als tar Datei speichern
             }
         }
         stage('SonarQube Analysis') {
@@ -37,19 +36,8 @@ pipeline {
             }
         }
         stage("Deploy") {
-            environment {
-                SERVERPORT = "22413"
-                YMLFILENAME = "docker-compose-module-service.yml"
-                SSHUSER = "jenkins"
-                SERVERNAME = "fsygs15.inf.fh-koeln.de"
-            }
             steps {
-                sh "scp -P ${SERVERPORT} -v ${IMAGE}.tar ${SSHUSER}@${SERVERNAME}:~/"     // Kopiert per ssh die tar Datei auf dem Produktionsserver
-                sh "scp -P ${SERVERPORT} -v ${YMLFILENAME} ${SSHUSER}@${SERVERNAME}:/srv/projektboerse/"
-                sh "ssh -p ${SERVERPORT} ${SSHUSER}@${SERVERNAME} " +
-                        "'docker image load -i ${IMAGE}.tar; " +
-                        /*"docker network inspect ptb &> /dev/null || docker network create ptb; " + */ // when connecting to other services, enable this
-                        "docker-compose -p ptb -f /srv/projektboerse/${YMLFILENAME} up -d'"
+                sh "cat /etc/hosts"
             }
         }
     }
