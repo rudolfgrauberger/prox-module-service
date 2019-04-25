@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                sh "mvn clean install -X" // Führt den Maven build aus
+                sh "mvn clean install" // Führt den Maven build aus
             }
         }
         stage('SonarQube Analysis') {
