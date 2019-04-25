@@ -11,18 +11,12 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                sh "mvn clean install" // Führt den Maven build aus
+                sh "mvn clean install -X" // Führt den Maven build aus
             }
         }
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    // requires SonarQube Scanner 3.2+
-                    scannerHome = tool 'TH Koeln GM SonarQube Scanner'
-                }
-                withSonarQubeEnv('TH Koeln GM SonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
+                sh "ifconfig"
             }
         }
         stage("Test") {
