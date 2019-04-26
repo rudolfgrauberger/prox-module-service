@@ -12,12 +12,13 @@ pipeline {
     stages {
         stage("Build") {
             steps {
-                sh "mvn clean install" // Führt den Maven build aus
+                sh "mvn -Dmaven.install.skip=true clean install" // Führt den Maven build aus
             }
         }
         stage('SonarQube Analysis') {
             steps {
                 sh "ifconfig"
+                sh "cd ./target && ls -ls"
             }
         }
         stage("Test") {
