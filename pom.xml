@@ -160,6 +160,7 @@
             <imageTag>${project.version}</imageTag>
             <imageTag>latest</imageTag>
           </imageTags>
+	  <serverId>nexus</serverId>
           <registryUrl>https://docker.nexus.archi-lab.io</registryUrl>
         </configuration>
       </plugin>
