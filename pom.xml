@@ -22,7 +22,7 @@
     <java.version>1.8</java.version>
     <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
     <dockerfile-maven.version>1.4.10</dockerfile-maven.version>
-    <docker.image.prefix>ptb-gp-ss2019.archi-lab.io</docker.image.prefix>
+    <docker.image.prefix>docker.nexus.archi-lab.io/archilab</docker.image.prefix>
      <keycloak.version>5.0.0</keycloak.version>
   </properties>
 
@@ -155,7 +155,12 @@
           </execution>
         </executions>
         <configuration>
-          <repository>${docker.image.prefix}/${project.artifactId}</repository>
+          <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+          <imageTags>
+            <imageTag>${project.version}</imageTag>
+            <imageTag>latest</imageTag>
+          </imageTags>
+          <registryUrl>https://docker.nexus.archi-lab.io</registryUrl>
         </configuration>
       </plugin>
 
