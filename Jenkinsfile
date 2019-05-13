@@ -5,25 +5,20 @@ pipeline {
             args '-v maven-data:/root/.m2'
         }
     }
-    environment {
-        REPOSITORY = "ptb-gp-ss2019.archi-lab.io"
-        IMAGE = "module-service"
-    }
     stages {
         stage("Build") {
             steps {
-                sh "mvn -Dmaven.install.skip=true clean install" // Führt den Maven build aus
+                sh "mvn clean compile"
             }
         }
         stage('SonarQube Analysis') {
             steps {
-                sh "ifconfig"
-                sh "cd ./target && ls -ls"
+                echo "SonarQube..."
             }
         }
         stage("Test") {
             steps {
-                echo "Testing..."
+                echo "mvn test"
             }
         }
         stage("Code Quality Check") {
@@ -33,7 +28,7 @@ pipeline {
         }
         stage("Deploy") {
             steps {
-                sh "cat /etc/hosts"
+                sh "mvn -Dmaven.test.skip=true -Dmaven.install.skip=true -Dmaven.deploy.skip=true deploy"
             }
         }
     }
