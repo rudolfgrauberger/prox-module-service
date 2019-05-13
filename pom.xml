@@ -8,7 +8,7 @@
   <artifactId>module-service</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <name>module-service</name>
+  <name>prox-module-service</name>
   <description>Module Service</description>
 
   <parent>
@@ -170,21 +170,55 @@
         <executions>
           <execution>
             <id>default</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>build</goal>
-              <!--<goal>push</goal>-->
             </goals>
+          </execution>
+          <execution>
+            <id>tag-latest</id>
+            <phase>package</phase>
+            <goals>
+              <goal>tag</goal>
+            </goals>
+            <configuration>
+              <tag>latest</tag>
+            </configuration>
+          </execution>
+          <execution>
+            <id>tag-version</id>
+            <phase>package</phase>
+            <goals>
+              <goal>tag</goal>
+            </goals>
+            <configuration>
+              <tag>${project.version}</tag>
+            </configuration>
+          </execution>
+          <execution>
+            <id>push-latest</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>push</goal>
+            </goals>
+            <configuration>
+              <tag>latest</tag>
+            </configuration>
+          </execution>
+          <execution>
+            <id>push-version</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>push</goal>
+            </goals>
+            <configuration>
+              <tag>${project.version}</tag>
+            </configuration>
           </execution>
         </executions>
         <configuration>
-          <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-          <imageTags>
-            <imageTag>${project.version}</imageTag>
-            <imageTag>latest</imageTag>
-          </imageTags>
-	  <serverId>nexus</serverId>
-          <registryUrl>https://docker.nexus.archi-lab.io</registryUrl>
+          <repository>${docker.image.prefix}/${project.name}</repository>
+          <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
         </configuration>
       </plugin>
 
