@@ -18,7 +18,7 @@ pipeline {
         }
         stage("Test") {
             steps {
-                echo "mvn test"
+                sh "mvn test"
             }
         }
         stage("Code Quality Check") {
